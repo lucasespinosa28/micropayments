@@ -1,0 +1,37 @@
+{
+  "name": "contract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "REPORT_GAS=true hardhat test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "1.0.0",
+    "@nomicfoundation/hardhat-toolbox-viem": "1.0.0",
+    "@nomicfoundation/hardhat-verify": "1.0.0",
+    "@nomicfoundation/hardhat-viem": "1.0.0",
+    "@types/chai": "4.2.0",
+    "@types/chai-as-promised": "7.1.6",
+    "@types/mocha": "^10.0.3",
+    "@types/node": "^20.8.9",
+    "chai": "4.2.0",
+    "hardhat": "^2.14.0",
+    "hardhat-gas-reporter": "1.0.8",
+    "solidity-coverage": "0.8.0",
+    "ts-node": "^10.9.1",
+    "typescript": "~5.0.4",
+    "viem": "1.15.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "@typechain/hardhat": "^9.1.0",
+    "@types/uuid": "^9.0.6",
+    "typechain": "^8.3.2",
+    "uuid": "^9.0.1"
+  }
+}
