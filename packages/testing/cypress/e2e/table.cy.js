@@ -1,17 +1,9 @@
 import { faker } from '@faker-js/faker';
-
-function generateRandomHex() {
-  let result = "0x";
-  let characters = "0123456789abcdef";
-  for (let i = 0; i < 40; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-}
+import { generateRandomHex } from './generateRandomHex';
 
 describe('template spec', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3000')
+    cy.visit('http://localhost:3000/invoice')
   })
   describe("table", () => {
     it('delete table', () => {

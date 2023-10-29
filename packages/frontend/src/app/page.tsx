@@ -13,10 +13,9 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <h1>{message}</h1>
-      <Link href="/historic">historic</Link>
-      <Link href="/invoice">invoice</Link>
-      <Link href="/payment">payment</Link>
-      {/* <Update/> */}
+      <Link id="historic" href="/historic">historic</Link>
+      <Link id="invoice" href="/invoice">invoice</Link>
+      <Link id="payment" href="/payment">payment</Link>
     </main>
   )
 }

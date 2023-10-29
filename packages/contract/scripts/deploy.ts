@@ -1,21 +1,44 @@
-import { formatEther, parseEther } from "viem";
-import hre from "hardhat";
+import { formatEther, parseEther, createPublicClient, http, createWalletClient, parseTransaction } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { hardhat } from 'viem/chains'
+import dataInvoice from "../artifacts/contracts/Invoice.sol/Invoice.json"
+import dataToken from "../artifacts/contracts/Token.sol/Token.json"
+import { writeFileSync } from "fs";
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = BigInt(currentTimestampInSeconds + 60);
+  const account = privateKeyToAccount('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80')
 
-  const lockedAmount = parseEther("0.001");
+  const client = createWalletClient({
+    account,
+    chain: hardhat,
+    transport: http()
+  })
 
-  const lock = await hre.viem.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
+  const publicClient = createPublicClient({
+    chain: hardhat,
+    transport: http()
+  })
 
-  console.log(
-    `Lock with ${formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
-  );
+  const invoice = await client.deployContract({
+    abi: dataInvoice.abi,
+    account,
+    bytecode: dataInvoice.bytecode as `0x${string}`
+  })
+
+  console.log(`contract was deployed successfully address: ${JSON.stringify(invoice)}`);
+  const invoiceReceipt = await publicClient.waitForTransactionReceipt({ hash: invoice })
+  const invoiceAddress = invoiceReceipt.contractAddress;
+
+  const Token = await client.deployContract({
+    abi: dataToken.abi,
+    account,
+    bytecode: dataToken.bytecode as `0x${string}`
+  })
+
+  console.log(`contract was deployed successfully address: ${JSON.stringify(Token)}`);
+  const TokenReceipt = await publicClient.waitForTransactionReceipt({ hash: Token })
+  const TokenAddress = TokenReceipt.contractAddress;
+  writeFileSync('address.json', JSON.stringify({invoice:invoiceAddress,token:TokenAddress}),{encoding:'utf8',flag:'w'});
 }
 
 // We recommend this pattern to be able to use async/await everywhere

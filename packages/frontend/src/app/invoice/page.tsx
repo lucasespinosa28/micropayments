@@ -1,11 +1,13 @@
 "use client";
+import { Update } from "@/compoments/update";
 import Link from "next/link";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <h1>Invoice</h1>
-      <Link href="/">Back</Link>
+      <Link id="back"href="/">Back</Link>
+      <Update/>
     </main>
   );
 }

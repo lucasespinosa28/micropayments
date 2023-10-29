@@ -4,6 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "node":"hardhat node",
+    "deploy:test":"hardhat run ./scripts/deploy.ts",
+    "token:mint":"hardhat run ./scripts/token.ts",
+    "invoice":"hardhat run ./scripts/invoice.ts",
+    "history":"hardhat run ./scripts/history.ts",
     "compile": "hardhat compile",
     "test": "REPORT_GAS=true hardhat test"
   },

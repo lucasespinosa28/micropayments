@@ -6,15 +6,7 @@ import { expect } from "chai";
 import hre from "hardhat";
 import { v4 as uuidv4 } from "uuid";
 import { parseUnits } from "viem";
-
-function generateRandomHex(): `0x${string}` {
-  let result: `0x${string}` = "0x";
-  let characters = "0123456789abcdef";
-  for (let i = 0; i < 40; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-}
+import { generateRandomHex } from "./generateRandomHex";
 
 describe("Invoice", function () {
   async function deployFixture() {
