@@ -109,7 +109,7 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect({ success: true, message: 'Hello World!' });
   });
-  it('/save (GET)', () => {
+  it('/save (POST)', () => {
     const json: Json[] = [];
     for (let index = 0; index < 10; index++) {
       json.push({

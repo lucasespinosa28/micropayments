@@ -14,6 +14,22 @@ import data from "../address.json";
 import { v4 as uuidv4 } from "uuid";
 import { generateRandomHex } from "../test/generateRandomHex";
 import { randomNumber } from "./randomNumber";
+import { faker } from "@faker-js/faker";
+
+const url = "http://localhost:8800/save/@id";
+
+type Result = {
+  success: boolean;
+  message: Payload[] | string;
+};
+
+type Payload = {
+  address: string;
+  name: string;
+  notes: string;
+  qty: number;
+  amount: string;
+};
 
 async function main() {
   const account = privateKeyToAccount(
@@ -33,11 +49,21 @@ async function main() {
   async function create(n: number) {
     let receivers: `0x${string}`[] = [];
     let amounts: bigint[] = [];
+    let payload: Payload[] = [];
     for (let index = 0; index < randomNumber(100); index++) {
+      const qty = faker.number.int({ min: 1, max: 10 });
+      const amount = faker.number.float({ min: 0.5, max: 10, precision: 0.01 });
+      payload[index] = {
+        address: generateRandomHex(),
+        name: faker.internet.userName(),
+        notes: faker.lorem.lines(1),
+        qty:qty,
+        amount: amount.toString(),
+      };
       receivers[index] = generateRandomHex();
-      amounts[index] = parseUnits(randomNumber(10).toString(), 18);
+      amounts[index] = parseUnits((qty * amount).toString(), 18);
     }
-
+    const id = uuidv4();
     const { request } = await publicClient.simulateContract({
       account,
       address: data.invoice as `0x${string}`,
@@ -45,7 +71,7 @@ async function main() {
       functionName: "create",
       args: [
         true,
-        uuidv4(),
+        id,
         data.token,
         generateRandomHex(),
         account.address,
@@ -57,7 +83,16 @@ async function main() {
     const receipt = await publicClient.waitForTransactionReceipt({
       hash: result,
     });
-    console.log(`create:${receipt.status}-${n}`);
+    console.log(`create:${receipt.status}-${n}-${id}`);
+    const upload = await fetch(url.replace("@id",id), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+    const json = await upload.json() as Result;
+    console.log(`offchain-${id} ${json.success}`)
   }
   for (let index = 0; index < 100; index++) {
     await create(index);
