@@ -1,8 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { FetchState, Data } from "./types";
+import { Data,FetchState, UploadData } from "./types";
 
-export const useRead = ({ id }: { id: string; }): FetchState => {
+export const useSave = ({
+  payload,
+}: {
+  payload: UploadData;
+}): FetchState => {
   const [state, setState] = useState<FetchState>({
     data: null,
     loading: true,
@@ -12,28 +16,25 @@ export const useRead = ({ id }: { id: string; }): FetchState => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8800/read/${id}`);
+        const response = await fetch(`http://localhost:8800/save/${payload.name}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload.body),
+        });
         if (response.ok) {
           const data: Data = await response.json();
-          let total = 0;
-          if (Array.isArray(data.message.payments)) {
-            data.message.payments.forEach((item) => {
-              console.log(item)
-              total += item.quantity * parseFloat(item.amount);
-            });
-            data.total = total;
-          }
-          
           setState({ data, loading: false, error: null });
         } else {
           const error = new Error("Error fetching data");
           setState({ data: null, loading: false, error });
         }
-      } catch (error) { }
+      } catch (error) {}
     };
 
     fetchData();
-  }, [id]);
+  }, [payload]);
 
   return state;
 };

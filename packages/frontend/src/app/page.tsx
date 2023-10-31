@@ -1,5 +1,5 @@
 "use client";
-import { Update } from '@/compoments/update'
+import { Update } from '@/app/invoice/update'
 import Image from 'next/image'
 import Link from 'next/link';
 import { useState } from 'react'

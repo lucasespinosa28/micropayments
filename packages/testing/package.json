@@ -12,5 +12,8 @@
   "devDependencies": {
     "@faker-js/faker": "^8.2.0",
     "cypress": "^13.3.3"
+  },
+  "dependencies": {
+    "clipboardy": "^4.0.0"
   }
 }

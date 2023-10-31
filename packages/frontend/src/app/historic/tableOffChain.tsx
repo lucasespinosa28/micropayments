@@ -7,9 +7,9 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
-import { ResponseOff } from "./types";
+import { Payments,ResponseOff } from "./types";
 
-const onChainColumnHelper = createColumnHelper<ResponseOff>();
+const onChainColumnHelper = createColumnHelper<Payments>();
 const columns = [
   onChainColumnHelper.accessor("address", {
     cell: (info) => info.getValue(),
@@ -20,15 +20,15 @@ const columns = [
   onChainColumnHelper.accessor("notes", {
     cell: (info) => info.getValue(),
   }),
-  onChainColumnHelper.accessor("qty", {
+  onChainColumnHelper.accessor("quantity", {
     cell: (info) => info.getValue(),
   }),
   onChainColumnHelper.accessor("amount", {
     cell: (info) => info.getValue(),
   }),
 ];
-export function TableOffChain({ defaultData }: { defaultData: ResponseOff[]; }) {
-  const [data, setData] = useState(() => [...defaultData]);
+export function TableOffChain({ defaultData }: { defaultData: ResponseOff }) {
+  const [data, setData] = useState(() => [...defaultData.payments]);
   const table = useReactTable({
     data,
     columns,

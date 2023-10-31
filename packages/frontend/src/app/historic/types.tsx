@@ -7,10 +7,16 @@ export type Invoice = {
 };
 
 export type ResponseOff = {
+    token:`0x${string}`
+    payments:Payments[]
+};
+
+
+export type Payments = {
   address: string;
   name: string;
   notes: string;
-  qty: number;
+  quantity: number;
   amount: string;
 };
 
@@ -24,7 +30,7 @@ export type ResponseOn = {
 };
 export type Data = {
   success: boolean;
-  message: ResponseOff[];
+  message: ResponseOff[]|string;
   total: number | null;
 };
 

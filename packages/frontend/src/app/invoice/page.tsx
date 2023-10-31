@@ -1,5 +1,5 @@
 "use client";
-import { Update } from "@/compoments/update";
+import { Update } from "@/app/invoice/update";
 import Link from "next/link";
 
 export default function Home() {

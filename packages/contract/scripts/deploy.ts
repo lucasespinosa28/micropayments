@@ -38,7 +38,7 @@ async function main() {
   console.log(`contract was deployed successfully address: ${JSON.stringify(Token)}`);
   const TokenReceipt = await publicClient.waitForTransactionReceipt({ hash: Token })
   const TokenAddress = TokenReceipt.contractAddress;
-  writeFileSync('address.json', JSON.stringify({invoice:invoiceAddress,token:TokenAddress}),{encoding:'utf8',flag:'w'});
+  writeFileSync('address.json', JSON.stringify({ invoice: invoiceAddress, token: TokenAddress }), { encoding: 'utf8', flag: 'w' });
 }
 
 // We recommend this pattern to be able to use async/await everywhere

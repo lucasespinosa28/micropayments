@@ -1,10 +1,7 @@
 import {
-  formatEther,
-  parseEther,
   createPublicClient,
   http,
   createWalletClient,
-  parseTransaction,
   parseUnits,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
@@ -20,15 +17,24 @@ const url = "http://localhost:8800/save/@id";
 
 type Result = {
   success: boolean;
-  message: Payload[] | string;
+  message: Payments[] | string;
 };
 
-type Payload = {
+
+export type Payments = {
   address: string;
   name: string;
   notes: string;
-  qty: number;
+  quantity: number;
   amount: string;
+};
+
+export type UploadData = {
+  name: string;
+  body: {
+    token:`0x${string}`
+    payments:Payments[]
+  }
 };
 
 async function main() {
@@ -49,19 +55,20 @@ async function main() {
   async function create(n: number) {
     let receivers: `0x${string}`[] = [];
     let amounts: bigint[] = [];
-    let payload: Payload[] = [];
+    let payments: Payments[] = [];
     for (let index = 0; index < randomNumber(100); index++) {
-      const qty = faker.number.int({ min: 1, max: 10 });
+      const quantity = faker.number.int({ min: 1, max: 10 });
       const amount = faker.number.float({ min: 0.5, max: 10, precision: 0.01 });
-      payload[index] = {
-        address: generateRandomHex(),
+      const hex = generateRandomHex()
+      payments[index] = {
+        address: hex,
         name: faker.internet.userName(),
         notes: faker.lorem.lines(1),
-        qty:qty,
+        quantity:quantity,
         amount: amount.toString(),
       };
-      receivers[index] = generateRandomHex();
-      amounts[index] = parseUnits((qty * amount).toString(), 18);
+      receivers[index] = hex;
+      amounts[index] = parseUnits((quantity * amount).toString(), 18);
     }
     const id = uuidv4();
     const { request } = await publicClient.simulateContract({
@@ -89,7 +96,7 @@ async function main() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({token:data.token as `0x${string}`,payments:payments}),
     })
     const json = await upload.json() as Result;
     console.log(`offchain-${id} ${json.success}`)

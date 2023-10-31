@@ -1,24 +1,16 @@
 import { faker } from '@faker-js/faker';
 import { generateRandomHex } from './generateRandomHex';
 
-describe('template spec', () => {
+import address from "../../../contract/address.json" 
+
+describe('invoice spec', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3000/invoice')
+    cy.visit('/invoice')
   })
-  describe("table", () => {
-    it('delete table', () => {
-      for (let index = 0; index < 3; index++) {
-        cy.get('#addElement').click()
-      }
-      cy.get(`#remove1`).click()
-    })
-    it('create table', () => {
-      for (let index = 0; index < 10; index++) {
-        cy.get(`#address${index}`).should('exist')
-        cy.get('#addElement').click()
-      }
-    })
+  describe("invoice", () => {
     it('write address', () => {
+      cy.get('#selectInput').select('Custom');
+      cy.get("#tokenAddress").clear().type(address.token)
       for (let index = 0; index < 9; index++) {
         cy.get('#addElement').click()
       }
@@ -27,8 +19,9 @@ describe('template spec', () => {
         cy.get(`#name${index}`).type(faker.internet.userName())
         cy.get(`#notes${index}`).type(faker.lorem.lines(1))
         cy.get(`#quantity${index}`).type(faker.number.int({ min:1, max: 10 }))
-        cy.get(`#amount${index}`).type(faker.number.float({ min: 10, max: 100, precision: 0.01 }) )
+        cy.get(`#amount${index}`).type(faker.number.float({ min: 0.5, max: 10, precision: 0.01 }) )
       }
+      cy.get("#upload").click();
     })
   })
 })
