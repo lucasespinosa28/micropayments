@@ -27,7 +27,6 @@ async function main() {
       functionName: 'getPayments',
       args:[item]
     })
-    console.log(payment)
     //console.log(JSON.stringify({id:item,data:payment}))
   })
   

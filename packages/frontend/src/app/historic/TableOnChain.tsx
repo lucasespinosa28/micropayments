@@ -5,20 +5,27 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable
+  useReactTable,
 } from "@tanstack/react-table";
 import { ResponseOn } from "./types";
+import { shortAddress } from "./shortAddress";
 
 const onChainColumnHelper = createColumnHelper<ResponseOn>();
 const columns = [
   onChainColumnHelper.accessor("receiver", {
-    cell: (info) => info.getValue(),
+    cell: (info) => shortAddress(info.getValue()),
   }),
   onChainColumnHelper.accessor("amount", {
     cell: (info) => parseFloat(formatUnits(info.getValue(), 18)).toFixed(2),
   }),
 ];
-export function TableOnChain({ defaultData }: { defaultData: ResponseOn[]; }) {
+export function TableOnChain({
+  total,
+  defaultData,
+}: {
+  total: any;
+  defaultData: ResponseOn[];
+}) {
   const [data, setData] = useState(() => [...defaultData]);
   const table = useReactTable({
     data,
@@ -28,33 +35,45 @@ export function TableOnChain({ defaultData }: { defaultData: ResponseOn[]; }) {
 
   return (
     <div>
-      <table>
-        <thead>
+     <div>
+        <div>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <div className="bg-slate-600 text-slate-50 font-bold text-left flex justify-between" key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>
+                <div className="mx-4" key={header.id}>
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </th>
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </div>
               ))}
-            </tr>
+            </div>
           ))}
-        </thead>
-        <tbody>
+        </div>
+        <div>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
+            <div className="flex border justify-between" key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <div className="mx-4" key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+                </div>
               ))}
-            </tr>
+            </div>
           ))}
+        </div>
+      </div>
+      <table className="table-auto w-full">
+        <thead className="bg-slate-600 text-slate-50 text-left w-full ">
+          <tr>
+            <th>Total:{total}</th>
+          </tr>
+        </thead>
+        <tbody className="w-full">
+          <tr>
+            <td></td>
+          </tr>
         </tbody>
       </table>
     </div>

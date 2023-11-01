@@ -9,11 +9,7 @@ export default function Home() {
   if (isConnecting) return <div>Connecting…</div>;
   if (isDisconnected) return <div>Disconnected</div>;
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Historic</h1>
-      <Link id="back" href="/">
-        Back
-      </Link>
+    <main>
       <Invoices address={address} />
     </main>
   );

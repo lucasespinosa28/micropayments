@@ -7,10 +7,9 @@ export type Invoice = {
 };
 
 export type ResponseOff = {
-    token:`0x${string}`
-    payments:Payments[]
+  token: `0x${string}`;
+  payments: Payments[];
 };
-
 
 export type Payments = {
   address: string;
@@ -23,14 +22,15 @@ export type Payments = {
 export type ResponseOn = {
   receiver: `0x${string}`;
   amount: bigint;
-};export type FetchState = {
+};
+export type FetchState = {
   data: Data | null;
   loading: boolean;
   error: Error | null;
+  fetchData: any;
 };
 export type Data = {
   success: boolean;
-  message: ResponseOff[]|string;
+  message: ResponseOff[] | string;
   total: number | null;
 };
-

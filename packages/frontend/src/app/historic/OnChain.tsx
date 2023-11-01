@@ -21,8 +21,7 @@ export const OnChain = ({ id }: { id: string; }) => {
     }
     return (
       <div>
-        <h1>Total {parseFloat(formatUnits(total, 18)).toFixed(2)}</h1>
-        <TableOnChain defaultData={data} />;
+        <TableOnChain total={parseFloat(formatUnits(total, 18)).toFixed(2)} defaultData={data} />
       </div>
     );
   }
