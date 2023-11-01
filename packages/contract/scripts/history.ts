@@ -19,7 +19,6 @@ async function main() {
     functionName: 'getHistory',
     args:[account.address]
   }) as string[]
-  console.log(history)
   history.map(async (item,index) =>{
     const payment = await publicClient.readContract({
       address:data.invoice as `0x${string}`,

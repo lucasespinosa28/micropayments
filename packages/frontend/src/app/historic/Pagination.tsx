@@ -110,18 +110,21 @@ export const Pagination = ({
       </div>
     );
   };
-  return (
-    <div>
-      <Buttons />
-      <div ref={parent}>
-        {currentData.map((item) => (
-          <div className="my-5" key={`${item}-{index}`}>
-            <Payments id={item} />
-            <hr />
-          </div>
-        ))}
+  if (data.length > 0) {
+    return (
+      <div>
+        <Buttons />
+        <div ref={parent}>
+          {currentData.map((item) => (
+            <div className="my-5" key={`${item}-{index}`}>
+              <Payments id={item} />
+              <hr />
+            </div>
+          ))}
+        </div>
+        <Buttons />
       </div>
-      <Buttons />
-    </div>
-  );
+    );
+  }
+  return <></>;
 };

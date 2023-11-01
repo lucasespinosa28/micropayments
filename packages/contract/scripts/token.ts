@@ -44,7 +44,6 @@ async function main() {
     const receipt = await publicClient.waitForTransactionReceipt({ hash: result })
     console.log(`approve:${receipt.status}`)
   }
-  await appove()
 
   const balance = await publicClient.readContract({
     address:data.token as `0x${string}`,

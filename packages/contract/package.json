@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "node": "hardhat node",
+    "dev": "hardhat node",
     "deploy:test": "hardhat run ./scripts/deploy.ts",
     "token:mint": "hardhat run ./scripts/token.ts",
     "invoice": "hardhat run ./scripts/invoice.ts",

@@ -1,12 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Data,FetchState, UploadData } from "./types";
+import { Data, FetchState, UploadData } from "./types";
 
-export const useSave = ({
-  payload,
-}: {
-  payload: UploadData;
-}): FetchState => {
+export const useSave = ({ payload }: { payload: UploadData }): FetchState => {
   const [state, setState] = useState<FetchState>({
     data: null,
     loading: true,
@@ -15,13 +11,16 @@ export const useSave = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8800/save/${payload.name}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload.body),
-        });
+        const response = await fetch(
+          `http://localhost:8800/save/${payload.name}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload.body),
+          }
+        );
         if (response.ok) {
           const data: Data = await response.json();
           setState({ data, loading: false, error: null });

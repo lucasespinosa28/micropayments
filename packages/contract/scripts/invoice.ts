@@ -32,8 +32,8 @@ export type Payments = {
 export type UploadData = {
   name: string;
   body: {
-    token:`0x${string}`
-    payments:Payments[]
+    token: `0x${string}`
+    payments: Payments[]
   }
 };
 
@@ -64,7 +64,7 @@ async function main() {
         address: hex,
         name: faker.internet.userName(),
         notes: faker.lorem.lines(1),
-        quantity:quantity,
+        quantity: quantity,
         amount: amount.toString(),
       };
       receivers[index] = hex;
@@ -91,17 +91,17 @@ async function main() {
       hash: result,
     });
     console.log(`create:${receipt.status}-${n}-${id}`);
-    const upload = await fetch(url.replace("@id",id), {
+    const upload = await fetch(url.replace("@id", id), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({token:data.token as `0x${string}`,payments:payments}),
+      body: JSON.stringify({ token: data.token as `0x${string}`, payments: payments }),
     })
     const json = await upload.json() as Result;
     console.log(`offchain-${id} ${json.success}`)
   }
-  for (let index = 0; index < 100; index++) {
+  for (let index = 0; index < 3; index++) {
     await create(index);
   }
 }

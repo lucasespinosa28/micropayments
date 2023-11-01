@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:e2e": "cypress open"
+    "test:e2e": "cypress open",
+    "record":"cypress run --browser edge --spec './cypress/e2e/sendPayment.cy.js'"
   },
   "keywords": [],
   "author": "",

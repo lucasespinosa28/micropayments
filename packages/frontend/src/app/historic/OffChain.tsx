@@ -10,7 +10,6 @@ export const OffChain = ({ id }: { id: string; }) => {
   
   if (loading) return <div>Loading...</div>;
   if (error != null) return <div>Error: {error.message}</div>;
-  console.log(data)
   if (data?.success) {
     return (
       <>

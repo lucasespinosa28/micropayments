@@ -35,7 +35,6 @@ const Button = ({
   children: ReactNode;
   type: "button" | "submit" | "reset";
 }) => {
-  console.log(id);
   return (
     <div className="flex justify-center">
       <button
@@ -183,7 +182,6 @@ export const Update = () => {
   );
 
   const handleSubmit = (event: BaseSyntheticEvent) => {
-    console.log("submit");
     event.preventDefault();
     const json: Payments[] = [];
     addressRef.current.forEach((input, index) => {
