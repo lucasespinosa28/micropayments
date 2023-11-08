@@ -3,8 +3,13 @@ pragma solidity ^0.8.20;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import "hardhat/console.sol";
 
 contract Invoice is Ownable {
+    function getBlockTime() external view returns (uint256) {
+        return block.timestamp;
+    }
+
     mapping(address => bool) internal blocked;
     mapping(address => mapping(address => bool)) internal Banned;
     mapping(address => address[]) internal bannedList;
@@ -20,9 +25,13 @@ contract Invoice is Ownable {
         bool paid;
     }
 
-    constructor(
-        address initialOwner
-    ) Ownable(initialOwner) {}
+    constructor(address initialOwner) Ownable(initialOwner) {}
+
+    function getHistory(
+        address _address
+    ) external view returns (bytes32[] memory) {
+        return history[_address];
+    }
 
     function setBlock(bool _block) external {
         blocked[msg.sender] = _block;
@@ -38,22 +47,21 @@ contract Invoice is Ownable {
         return bannedList[_address];
     }
 
-    function updateBanned(
-        address[] memory _address,
-        bool[] memory _blocked
-    ) external {
-        require(
-            _address.length == _blocked.length,
-            "Both address and blocked need to be same length"
-        );
-        for (uint256 i = 0; i < _blocked.length; i++) {
-            if (_blocked[i]) {
-                Banned[msg.sender][_address[i]] = true;
-            } else {
+    function updateBanned(address[] memory _address) external {
+        if (bannedList[msg.sender].length > 0) {
+            for (uint256 i = 0; i < _address.length; i++) {
                 delete Banned[msg.sender][_address[i]];
-                delete bannedList[msg.sender][i];
             }
         }
+        delete bannedList[msg.sender];
+        for (uint256 i = 0; i < _address.length; i++) {
+            Banned[msg.sender][_address[i]] = true;
+            bannedList[msg.sender].push(_address[i]);
+        }
+    }
+
+    function getPayment(bytes32 id) external view returns (Payment[] memory) {
+        return payments[id];
     }
 
     /// @notice create an new payment
@@ -66,7 +74,7 @@ contract Invoice is Ownable {
         address[] calldata payer,
         address[] calldata receiver
     ) external {
-        require(payments[id].length > 0, "It Id was used");
+        require(payments[id].length == 0, "It Id was used");
         require(
             dateTime.length == token.length &&
                 token.length == amount.length &&
@@ -98,27 +106,51 @@ contract Invoice is Ownable {
                 );
                 payments[id].push(newPayment);
                 if (payer[i] == receiver[i]) {
-                    history[receiver[i]].push(id);
+                    uint256 lastIndex = history[receiver[i]].length;
+
+                    if (lastIndex == 0) {
+                        history[receiver[i]].push(id);
+                    } else {
+                        if (history[receiver[i]][lastIndex - 1] != id) {
+                            history[receiver[i]].push(id);
+                        }
+                    }
                 } else {
-                    history[payer[i]].push(id);
-                    history[receiver[i]].push(id);
+                    uint256 payerlastIndex = history[payer[i]].length;
+                    if (payerlastIndex == 0) {
+                        history[payer[i]].push(id);
+                    } else {
+                        if (history[payer[i]][payerlastIndex - 1] != id) {
+                            history[payer[i]].push(id);
+                        }
+                    }
+                    uint256 receiverlastIndex = history[receiver[i]].length;
+                    if (receiverlastIndex == 0) {
+                        history[receiver[i]].push(id);
+                    } else {
+                        if (history[receiver[i]][receiverlastIndex - 1] != id) {
+                            history[receiver[i]].push(id);
+                        }
+                    }
                 }
             }
         }
     }
 
-    function sendPayment(bytes32 id, uint256 index) external returns (bool) {
+    function sendPayment(bytes32 id, uint256 index) external {
         require(
             IERC20(payments[id][index].token).balanceOf(msg.sender) >
                 payments[id][index].amount,
             "insuffient token balance"
         );
-        bool result = IERC20(payments[id][index].token).transferFrom(
-            msg.sender,
-            address(this),
-            payments[id][index].amount
+        require(
+            IERC20(payments[id][index].token).transferFrom(
+                msg.sender,
+                address(this),
+                payments[id][index].amount
+            ),
+            "token transfer from sender failed"
         );
-        return result;
     }
 
     function sendAllPayment(bytes32 id, uint256[] memory index) external {
@@ -128,12 +160,15 @@ contract Invoice is Ownable {
                     payments[id][index[i]].amount,
                 "insuffient token balance"
             );
-            bool result = IERC20(payments[id][index[i]].token).transferFrom(
-                msg.sender,
-                address(this),
-                payments[id][index[i]].amount
+
+            require(
+                IERC20(payments[id][i].token).transferFrom(
+                    msg.sender,
+                    address(this),
+                    payments[id][i].amount
+                ),
+                "token transfer from sender failed"
             );
-            require(result, "fail to send token");
         }
     }
 
@@ -146,14 +181,13 @@ contract Invoice is Ownable {
             payments[id][index].dateTime <= block.timestamp,
             "Timer not locked."
         );
-        bool result = IERC20(payments[id][index].token).transferFrom(
-            address(this),
-            payments[id][index].payer,
-            payments[id][index].amount
+        require(
+            IERC20(payments[id][index].token).transfer(
+                payments[id][index].receiver,
+                payments[id][index].amount
+            ),
+            "token transfer from sender failed"
         );
-        if (result == false) {
-            revert("Error to transfer amount to receiver account.");
-        }
         payments[id][index].paid = true;
     }
 
@@ -162,14 +196,13 @@ contract Invoice is Ownable {
             payments[id][index].payer == msg.sender,
             "Only payer is allwod to cancel payment."
         );
-        bool result = IERC20(payments[id][index].token).transferFrom(
-            address(this),
-            payments[id][index].payer,
-            payments[id][index].amount
+        require(
+            IERC20(payments[id][index].token).transfer(
+                payments[id][index].payer,
+                payments[id][index].amount
+            ),
+            "token transfer from sender failed"
         );
-        if (result == false) {
-            revert("Error to transfer amount to payer account.");
-        }
         delete payments[id][index];
     }
 }

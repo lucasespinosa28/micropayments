@@ -110,6 +110,9 @@ importers:
       '@types/uuid':
         specifier: ^9.0.6
         version: 9.0.6
+      nanoid:
+        specifier: ^3.3.4
+        version: 3.3.6
       solidity-docgen:
         specifier: 0.6.0-beta.36
         version: 0.6.0-beta.36(hardhat@2.18.3)
