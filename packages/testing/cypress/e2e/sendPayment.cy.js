@@ -9,10 +9,13 @@ const total = 5;
 describe('invoice spec', () => {
   beforeEach(() => {
     cy.viewport('iphone-xr') // Set viewport to 375px x 667px
-    cy.visit('/invoice')
+    cy.visit('/')
   })
   describe("invoice", async () => {
     it('write address', async () => {
+      cy.wait(1000)
+      cy.get("#invoice").click()
+      cy.wait(1000)
       cy.get('#selectInput').select('Custom');
       cy.get("#tokenAddress").clear().type(address.token)
       for (let index = 1; index < total; index++) {
@@ -27,15 +30,19 @@ describe('invoice spec', () => {
       }
       cy.get("#upload").click();
       cy.get("#clipboard").click();
+      cy.wait(1000)
       cy.get('#back').click()
+      cy.wait(1000)
       cy.get('#payment').click()
       cy.window().then(async (win) => {
         const text = await win.navigator.clipboard.readText()
         cy.get(`#findInput`).type(text)
         cy.get('#findButton').click()
         cy.get('#Appove').click()
-        cy.wait(2000)
+        cy.wait(1000)
         cy.get('#sendTranscation').click()
+        cy.wait(1000)
+        cy.get('#back').click()
       })
 
     })

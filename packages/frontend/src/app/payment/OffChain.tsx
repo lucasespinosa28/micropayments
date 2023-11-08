@@ -15,7 +15,7 @@ export const OffChain = ({
   id: string;
   address: `0x${string}`;
 }) => {
-  const { data, loading, error, fetchData } = useRead({ id });
+  const { data, loading, error, fetchData } = useRead();
   useEffect(() => {
     fetchData(id);
   }, [id]);
@@ -38,7 +38,7 @@ export const OffChain = ({
         <Balance address={address} contract={data.message.token} />
         <div className="bg-red-900 overflow-x-auto w-full">
           <TableOffChain
-            total={data.total}
+            total={data.total?.toFixed(2)}
             defaultData={data.message as ResponseOff[]}
           />
         </div>
@@ -47,7 +47,6 @@ export const OffChain = ({
           {!isPiad && (
             <SendPayment
               id={id}
-              address={address}
               payments={data.message.payments}
             />
           )}

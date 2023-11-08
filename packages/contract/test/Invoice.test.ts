@@ -52,8 +52,6 @@ describe("Invoice", function () {
       true,
       id,
       token.address,
-      otherAccount.account.address,
-      owner.account.address,
       receivers,
       amounts,
     ]);
@@ -105,8 +103,6 @@ describe("Invoice", function () {
       true,
       id,
       token.address,
-      otherAccount.account.address,
-      owner.account.address,
       receivers,
       amounts,
     ]);
@@ -158,8 +154,6 @@ describe("Invoice", function () {
       false,
       id,
       token.address,
-      otherAccount.account.address,
-      owner.account.address,
       receivers,
       amounts,
     ]);

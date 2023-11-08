@@ -32,7 +32,7 @@ export function TableOffChain({
   total,
   defaultData,
 }: {
-  total: any;
+  total: number;
   defaultData: ResponseOff;
 }) {
   const [data, setData] = useState(() => [...defaultData.payments]);

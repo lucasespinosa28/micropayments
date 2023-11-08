@@ -80,8 +80,6 @@ async function main() {
         true,
         id,
         data.token,
-        generateRandomHex(),
-        account.address,
         receivers,
         amounts,
       ],
@@ -101,7 +99,7 @@ async function main() {
     const json = await upload.json() as Result;
     console.log(`offchain-${id} ${json.success}`)
   }
-  for (let index = 0; index < 3; index++) {
+  for (let index = 0; index < 28; index++) {
     await create(index);
   }
 }

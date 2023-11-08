@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import { ResponseOff } from "../historic/types";
-import metadata from "../../abi/Invoice.json";
+import { Payments } from "../historic/types";
+import metadata from "../../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
 import { useContractWrite } from "wagmi";
 import { parseUnits } from "viem";
 import contract from "../../../../../packages/contract/address.json";
@@ -9,18 +9,16 @@ import { WaitForTransaction } from "./WaitForTransaction";
 
 
 export function SendPayment({
-  id, address, payments,
+  id, payments,
 }: {
   id: string;
-  address: string;
-  payments: ResponseOff[];
+  payments: Payments[];
 }) {
   const [disabled, setDisabled] = useState<boolean>(false);
   let receivers: string[] = [];
   let amounts: bigint[] = [];
   for (let index = 0; index < payments.length; index++) {
-    if (payments[index].amount > 0 && payments[index].quantity > 0) {
-      console.log(payments[index])
+    if (parseFloat(payments[index].amount) > 0 && payments[index].quantity > 0) {
       receivers.push(payments[index].address);
       amounts.push(
         parseUnits(
@@ -32,11 +30,11 @@ export function SendPayment({
       );
     }
   }
-  const { data, isLoading, isSuccess, write } = useContractWrite({
+  const { data, isLoading, isSuccess,isError, write } = useContractWrite({
     address: contract.invoice as `0x${string}`,
     abi: metadata.abi,
     functionName: "create",
-    args: [true, id, contract.token, address, address, receivers, amounts],
+    args: [true, id, contract.token, receivers, amounts],
   });
   return (
     <div>
@@ -73,9 +71,16 @@ export function SendPayment({
           </div>
         </div>
       )}
+      {isError && (
+         <div className="bg-red-500 text-white font-bold py-2 px-4 m-2 rounded w-64  shadow-md">
+         <div className="flex flex-col">
+           <span>Error</span>
+         </div>
+       </div>
+      )}
       {isSuccess && (
         <>
-          <WaitForTransaction hash={data?.hash} />
+          <WaitForTransaction hash={data?.hash as `0x${string}`} />
         </>
       )}
     </div>
