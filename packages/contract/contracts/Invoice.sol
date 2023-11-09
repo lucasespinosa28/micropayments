@@ -6,15 +6,10 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
 contract Invoice is Ownable {
-    function getBlockTime() external view returns (uint256) {
-        return block.timestamp;
-    }
-
     mapping(address => bool) internal blocked;
-    mapping(address => mapping(address => bool)) internal Banned;
-    mapping(address => address[]) internal bannedList;
     mapping(bytes32 => Payment[]) internal payments;
     mapping(address => bytes32[]) internal history;
+    mapping(bytes32 => mapping(uint256 => uint256)) paymentBalance;
 
     struct Payment {
         uint256 dateTime;
@@ -22,7 +17,7 @@ contract Invoice is Ownable {
         uint256 amount;
         address payer;
         address receiver;
-        bool paid;
+        uint8 status;
     }
 
     constructor(address initialOwner) Ownable(initialOwner) {}
@@ -41,26 +36,7 @@ contract Invoice is Ownable {
         return blocked[_address];
     }
 
-    function getBannedList(
-        address _address
-    ) external view returns (address[] memory) {
-        return bannedList[_address];
-    }
-
-    function updateBanned(address[] memory _address) external {
-        if (bannedList[msg.sender].length > 0) {
-            for (uint256 i = 0; i < _address.length; i++) {
-                delete Banned[msg.sender][_address[i]];
-            }
-        }
-        delete bannedList[msg.sender];
-        for (uint256 i = 0; i < _address.length; i++) {
-            Banned[msg.sender][_address[i]] = true;
-            bannedList[msg.sender].push(_address[i]);
-        }
-    }
-
-    function getPayment(bytes32 id) external view returns (Payment[] memory) {
+    function getPayments(bytes32 id) external view returns (Payment[] memory) {
         return payments[id];
     }
 
@@ -74,26 +50,23 @@ contract Invoice is Ownable {
         address[] calldata payer,
         address[] calldata receiver
     ) external {
-        require(payments[id].length == 0, "It Id was used");
+        require(payments[id].length == 0, "This id has already been used.");
         require(
             dateTime.length == token.length &&
                 token.length == amount.length &&
                 amount.length == payer.length &&
                 payer.length == receiver.length &&
                 receiver.length == dateTime.length,
-            "Every array need be same length"
+            "Every array need be same length."
         );
         for (uint256 i = 0; i < receiver.length; i++) {
             {
                 if (amount[i] == 0) {
-                    revert("Error: Amount of tokens transfer is not zero.");
+                    revert("The token amount cannot be zero.");
                 }
                 if (msg.sender != payer[i] && blocked[payer[i]]) {
-                    revert("It account is no allowed to ask for payment");
-                }
-                if (Banned[payer[i]][receiver[i]] == true) {
                     revert(
-                        "It account is no allowed this account to ask for payment"
+                        "This account does not let anyone ask for payments."
                     );
                 }
                 Payment memory newPayment = Payment(
@@ -102,7 +75,7 @@ contract Invoice is Ownable {
                     amount[i],
                     payer[i],
                     receiver[i],
-                    false
+                    0
                 );
                 payments[id].push(newPayment);
                 if (payer[i] == receiver[i]) {
@@ -151,6 +124,8 @@ contract Invoice is Ownable {
             ),
             "token transfer from sender failed"
         );
+        paymentBalance[id][index] =  payments[id][index].amount;
+        payments[id][index].status = 1; 
     }
 
     function sendAllPayment(bytes32 id, uint256[] memory index) external {
@@ -169,40 +144,52 @@ contract Invoice is Ownable {
                 ),
                 "token transfer from sender failed"
             );
+            paymentBalance[id][i] =  payments[id][i].amount;
+             payments[id][i].status = 1; 
         }
     }
 
     function confirm(bytes32 id, uint256 index) external {
         require(
+            paymentBalance[id][index] >= payments[id][index].amount,
+            "There are not enough tokens for payment."
+        );
+         require(
+            payments[id][index].status != 0,
+            "payment has not received any tokens yet."
+        );
+        require(
             payments[id][index].receiver == msg.sender,
-            "Its payment is not for this account."
+            "Receiver is not sender."
         );
         require(
             payments[id][index].dateTime <= block.timestamp,
-            "Timer not locked."
+            "Payment has not yet been unlock."
         );
         require(
             IERC20(payments[id][index].token).transfer(
                 payments[id][index].receiver,
                 payments[id][index].amount
             ),
-            "token transfer from sender failed"
+            "Token transfer from sender failed"
         );
-        payments[id][index].paid = true;
+        payments[id][index].status = 2;
     }
 
     function cancel(bytes32 id, uint256 index) external {
         require(
-            payments[id][index].payer == msg.sender,
-            "Only payer is allwod to cancel payment."
+            payments[id][index].payer == msg.sender ||
+                payments[id][index].receiver == msg.sender,
+            "Only payer or receiver can cancel payment."
         );
         require(
             IERC20(payments[id][index].token).transfer(
                 payments[id][index].payer,
                 payments[id][index].amount
             ),
-            "token transfer from sender failed"
+            "Token transfer from sender failed"
         );
         delete payments[id][index];
+        payments[id][index].status = 3;
     }
 }

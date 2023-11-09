@@ -10,6 +10,7 @@
     "invoice": "hardhat run ./scripts/invoice.ts",
     "history": "hardhat run ./scripts/history.ts",
     "compile": "hardhat compile --force",
+    "coverage": "hardhat coverage --show-stack-traces",
     "test": "REPORT_GAS=false hardhat test"
   },
   "keywords": [],
@@ -34,12 +35,14 @@
   },
   "dependencies": {
     "@faker-js/faker": "^8.2.0",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.2",
     "@openzeppelin/contracts": "^5.0.0",
     "@typechain/hardhat": "^9.1.0",
     "@types/uuid": "^9.0.6",
     "nanoid": "^3.3.4",
     "solidity-docgen": "0.6.0-beta.36",
     "typechain": "^8.3.2",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "web3-utils": "^4.0.7"
   }
 }

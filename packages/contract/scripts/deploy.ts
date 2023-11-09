@@ -4,9 +4,9 @@ import { hardhat } from 'viem/chains'
 import dataInvoice from "../artifacts/contracts/Invoice.sol/Invoice.json"
 import dataToken from "../artifacts/contracts/Token.sol/Token.json"
 import { writeFileSync } from "fs";
-
+import accounts from "./accounts.json";
 async function main() {
-  const account = privateKeyToAccount('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80')
+  const account = privateKeyToAccount(accounts[0].PrivateKey as `0x${string}`)
 
   const client = createWalletClient({
     account,
@@ -22,7 +22,8 @@ async function main() {
   const invoice = await client.deployContract({
     abi: dataInvoice.abi,
     account,
-    bytecode: dataInvoice.bytecode as `0x${string}`
+    bytecode: dataInvoice.bytecode as `0x${string}`,
+    args: [accounts[0].Account as `0x${string}`]
   })
 
   console.log(`contract was deployed successfully address: ${JSON.stringify(invoice)}`);
