@@ -8,33 +8,19 @@ import {
   stringToHex,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { hardhat, iotexTestnet } from "viem/chains";
-import { v4 as uuidv4 } from "uuid";
-import { generateRandomHex } from "../test/generateRandomHex";
-import { randomNumber } from "./randomNumber";
-import { faker } from "@faker-js/faker";
+import { hardhat } from "viem/chains";
 
 import accounts from "./accounts.json";
 import contracts from "../address.json"
 import token from "../artifacts/contracts/Token.sol/Token.json"
 import invoice from "../artifacts/contracts/Invoice.sol/Invoice.json"
 import { nanoid } from "nanoid";
+import { getHistory } from "./getHistory";
+import { getPayments } from "./getPayments";
+import { Payment } from "./Payment";
 
 
-type Result = {
-  success: boolean;
-  message: Payments[] | string;
-};
 
-
-export type Payment = {
-  dateTime: bigint,
-  token: `0x${string}`,
-  amount: bigint,
-  payer: `0x${string}`,
-  receiver: `0x${string}`,
-  paid: boolean
-}
 // address: string;
 // name: string;
 // notes: string;
@@ -69,7 +55,10 @@ async function mint(publicClient: PublicClient, account: Account) {
   })
   const result = await client(account).writeContract(request)
   const receipt = await publicClient.waitForTransactionReceipt({ hash: result })
-  console.log(`mint:${receipt.status}`)
+  setTimeout(() => {
+    console.log(`mint:${receipt.status}`)
+  }, 1000);
+
 }
 
 async function appove(publicClient: PublicClient, account: Account) {
@@ -82,7 +71,10 @@ async function appove(publicClient: PublicClient, account: Account) {
   })
   const result = await client(account).writeContract(request)
   const receipt = await publicClient.waitForTransactionReceipt({ hash: result })
-  console.log(`approve:${receipt.status}`)
+  setTimeout(() => {
+    console.log(`approve:${receipt.status}`)
+  }, 1000);
+
 }
 
 async function createPayment(publicClient: PublicClient, account: Account, accounts: `0x${string}`[]) {
@@ -116,7 +108,11 @@ async function createPayment(publicClient: PublicClient, account: Account, accou
   })
   const result = await client(account).writeContract(request)
   const receipt = await publicClient.waitForTransactionReceipt({ hash: result })
-  console.log(`createPayment:${receipt.status}`)
+  setTimeout(() => {
+    console.log(`createPayment:${receipt.status}`)
+  }, 1000);
+
+  return { id: id, length: receiver.length }
 }
 
 async function confirm(id: `0x${string}`, index: number, publicClient: PublicClient, account: Account) {
@@ -129,7 +125,26 @@ async function confirm(id: `0x${string}`, index: number, publicClient: PublicCli
   });
   const result = await client(account).writeContract(request)
   const receipt = await publicClient.waitForTransactionReceipt({ hash: result })
-  console.log(`confirm:${receipt.status}`)
+  setTimeout(() => {
+    console.log(`confirm:${receipt.status}`)
+  }, 1000);
+
+}
+
+async function cancel(id: `0x${string}`, index: number, publicClient: PublicClient, account: Account) {
+  const { request } = await publicClient.simulateContract({
+    account: account,
+    address: contracts.invoice as `0x${string}`,
+    abi: invoice.abi,
+    functionName: "confirm",
+    args: [id, BigInt(index)],
+  });
+  const result = await client(account).writeContract(request)
+  const receipt = await publicClient.waitForTransactionReceipt({ hash: result })
+  setTimeout(() => {
+    console.log(`confirm:${receipt.status}`)
+  }, 1000);
+
 }
 
 async function sendPayment(id: `0x${string}`, index: bigint, publicClient: PublicClient, account: Account) {
@@ -142,89 +157,54 @@ async function sendPayment(id: `0x${string}`, index: bigint, publicClient: Publi
   });
   const result = await client(account).writeContract(request)
   const receipt = await publicClient.waitForTransactionReceipt({ hash: result })
-  console.log(`sendPayment:${receipt.status} id:${index}`)
+  setTimeout(() => {
+    console.log(`sendPayment:${receipt.status} id:${index}`)
+  }, 1000)
 }
 
-async function getHistory(publicClient: PublicClient, account: Account) {
-  const history = await publicClient.readContract({
-    address: contracts.invoice as `0x${string}`,
-    abi: invoice.abi,
-    functionName: 'getHistory',
-    args: [account.address]
-  }) as `0x${string}`[]
-  return history;
-  // for (let index = 0; index < history.length; index++) {
-  //   const element = array[index];
-
-  // }
-  // const payments = history.map(async (item,index) =>{
-  //   const payment = await publicClient.readContract({
-  //     address:contracts.invoice as `0x${string}`,
-  //     abi: invoice.abi,
-  //     functionName: 'getPayments',
-  //     args:[item]
-  //   })
-  //   const result = payment;
-  //   return result
-  // })
-  // console.log(payments)
-}
-async function getPayments(publicClient: PublicClient, id: `0x${string}`) {
-  return await publicClient.readContract({
-    address: contracts.invoice as `0x${string}`,
-    abi: invoice.abi,
-    functionName: 'getPayments',
-    args: [id]
-  })
-}
 async function main() {
-  const { publicClient, account } = await initialize(0);
-  const owner = account;
-  await mint(publicClient, account);
-  await appove(publicClient, account);
-  const address = accounts.map(acc => acc.Account as `0x${string}`);
-  await createPayment(publicClient, account, address);
-  const history = await getHistory(publicClient, account);
-  for (let index = 0; index < history.length; index++) {
-  
-    const payments = await getPayments(publicClient, history[index]) as Payment[]
-    for (let loop = 0; loop < payments.length; loop++) {
-      const { account } = await initialize(loop + 1);
-      if (payments[loop].receiver === account.address) {
-        if (payments[loop].paid === false) {
-          await sendPayment(history[index],BigInt(loop.toString()),publicClient,owner);
-          await confirm(history[index],loop,publicClient,account);
-        }
-        //console.log({ ...payments[loop], account: account.address, index: loop, id: history[index] });
-      }
-    }
-    // for (let i = 0; i < payment.length; index++) {
-    //   const element = array[index];
-
-    // }
-    // payment.forEach(p => {
-    //  for (let index = 0; index < accounts.length; index++) {
-    //   const { account } = await initialize(i);
-
-    //  }
-    //   accounts.forEach((a,i) => {
-    //     if(a.Account === p.receiver){
-
-    //       await confirm(history[index],i,publicClient,account)
-    //       console.log()
-    //       console.log({payer:p.payer,receiver:p.receiver,account:a.Account,index:i})
-    //       console.log()
-    //     }
-    //   })
-    // })
-
+  for (let index = 0; index < 5; index++) {
+    console.log(`#${index}`)
+    await createInvoice0();
   }
+  // const responses =  
+  // for(let response of responses) {
+  //   console.log(response)
+  // }
 }
 
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+async function createInvoice0() {
+  const { publicClient, account } = await initialize(0);
+  const owner = account;
+  await mint(publicClient, account);
+  await appove(publicClient, account);
+  const address = accounts.map(acc => acc.Account as `0x${string}`);
+  const { id, length } = await createPayment(publicClient, account, address);
+  // for (let index = 0; index < length; index++) {
+  //   const { account } = await initialize(index + 1);
+  //   await sendPayment(id, BigInt(index), publicClient, owner);
+  //   await confirm(id, index, publicClient, account);
+
+  // }
+}
+async function createInvoice2() {
+  const { publicClient, account } = await initialize(0);
+  const owner = account;
+  await mint(publicClient, account);
+  await appove(publicClient, account);
+  const address = accounts.map(acc => acc.Account as `0x${string}`);
+  const { id, length } = await createPayment(publicClient, account, address);
+  for (let index = 0; index < length; index++) {
+    const { account } = await initialize(index + 1);
+    await sendPayment(id, BigInt(index), publicClient, owner);
+    await confirm(id, index, publicClient, account);
+
+  }
+}
 // async function invoice() {
 //   const account = privateKeyToAccount(
 //     "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"

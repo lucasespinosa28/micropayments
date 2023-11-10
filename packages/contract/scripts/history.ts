@@ -1,9 +1,9 @@
-import { formatEther, parseEther, createPublicClient, http, createWalletClient, parseTransaction, parseUnits } from "viem";
+import { createPublicClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { hardhat } from 'viem/chains'
-import dataInvoice from "../artifacts/contracts/Invoice.sol/Invoice.json"
-import data from "../address.json"
-import { writeFileSync } from "fs";
+import { getHistory } from "./getHistory";
+import { getPayments } from "./getPayments";
+import { Payment } from "./Payment";
 
 
 async function main() {
@@ -12,27 +12,13 @@ async function main() {
     chain: hardhat,
     transport: http()
   })
-  //const resulPayments = await invoice.read.getPayments([resulthistory[0]]);
-  const history = await publicClient.readContract({
-    address:data.invoice as `0x${string}`,
-    abi: dataInvoice.abi,
-    functionName: 'getHistory',
-    args:[account.address]
-  }) as string[]
-  history.map(async (item,index) =>{
-    const payment = await publicClient.readContract({
-      address:data.invoice as `0x${string}`,
-      abi: dataInvoice.abi,
-      functionName: 'getPayments',
-      args:[item]
-    })
-    //console.log(JSON.stringify({id:item,data:payment}))
-  })
-  
+  const history = await getHistory(publicClient, account);
+  for (let index = 0; index < history.length; index++) {
+    const payments = await getPayments(publicClient, history[index]) as Payment[]
+    console.log(payments)
+  }
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;

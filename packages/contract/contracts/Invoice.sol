@@ -3,7 +3,6 @@ pragma solidity ^0.8.20;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import "hardhat/console.sol";
 
 contract Invoice is Ownable {
     mapping(address => bool) internal blocked;
@@ -111,10 +110,13 @@ contract Invoice is Ownable {
     }
 
     function sendPayment(bytes32 id, uint256 index) external {
+        if (payments[id][index].status != 0) {
+            revert("Payment has already been paid or canceled.");
+        }
         require(
             IERC20(payments[id][index].token).balanceOf(msg.sender) >
                 payments[id][index].amount,
-            "insuffient token balance"
+            "Insuffient token balance."
         );
         require(
             IERC20(payments[id][index].token).transferFrom(
@@ -122,18 +124,21 @@ contract Invoice is Ownable {
                 address(this),
                 payments[id][index].amount
             ),
-            "token transfer from sender failed"
+            "Token transfer from sender failed."
         );
-        paymentBalance[id][index] =  payments[id][index].amount;
-        payments[id][index].status = 1; 
+        paymentBalance[id][index] = payments[id][index].amount;
+        payments[id][index].status = 1;
     }
 
     function sendAllPayment(bytes32 id, uint256[] memory index) external {
         for (uint256 i = 0; i < index.length; i++) {
+            if (payments[id][i].status != 0) {
+                revert("Payment has already been paid or canceled");
+            }
             require(
                 IERC20(payments[id][index[i]].token).balanceOf(msg.sender) >
                     payments[id][index[i]].amount,
-                "insuffient token balance"
+                "Insuffient token balance."
             );
 
             require(
@@ -142,25 +147,32 @@ contract Invoice is Ownable {
                     address(this),
                     payments[id][i].amount
                 ),
-                "token transfer from sender failed"
+                "Token transfer from sender failed."
             );
-            paymentBalance[id][i] =  payments[id][i].amount;
-             payments[id][i].status = 1; 
+            paymentBalance[id][i] = payments[id][i].amount;
+            payments[id][i].status = 1;
         }
     }
 
     function confirm(bytes32 id, uint256 index) external {
+        if (payments[id][index].status == 2) {
+            revert("This payment has already been confirmed.");
+        }
+        if (payments[id][index].status == 3) {
+            revert("This payment has already been canceled.");
+        }
         require(
             paymentBalance[id][index] >= payments[id][index].amount,
             "There are not enough tokens for payment."
         );
-         require(
+        require(
             payments[id][index].status != 0,
             "payment has not received any tokens yet."
         );
         require(
-            payments[id][index].receiver == msg.sender,
-            "Receiver is not sender."
+            payments[id][index].payer == msg.sender ||
+                payments[id][index].receiver == msg.sender,
+            "Only payer or receiver can confirm payment."
         );
         require(
             payments[id][index].dateTime <= block.timestamp,
@@ -171,24 +183,31 @@ contract Invoice is Ownable {
                 payments[id][index].receiver,
                 payments[id][index].amount
             ),
-            "Token transfer from sender failed"
+            "Token transfer from sender failed."
         );
         payments[id][index].status = 2;
     }
 
     function cancel(bytes32 id, uint256 index) external {
         require(
+            payments[id][index].status < 2,
+            "It is not possible to cancel completed payment or canceled."
+        );
+
+        require(
             payments[id][index].payer == msg.sender ||
                 payments[id][index].receiver == msg.sender,
             "Only payer or receiver can cancel payment."
         );
-        require(
-            IERC20(payments[id][index].token).transfer(
-                payments[id][index].payer,
-                payments[id][index].amount
-            ),
-            "Token transfer from sender failed"
-        );
+        if (payments[id][index].status == 1) {
+            require(
+                IERC20(payments[id][index].token).transfer(
+                    payments[id][index].payer,
+                    paymentBalance[id][index]
+                ),
+                "Token transfer from sender failed."
+            );
+        }
         delete payments[id][index];
         payments[id][index].status = 3;
     }

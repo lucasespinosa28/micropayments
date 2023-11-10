@@ -7,10 +7,59 @@ import { useAccount } from "wagmi";
 import { Invoices } from "./historic/Invoices";
 import contract from "../../../../packages/contract/address.json";
 import { Balance } from "./payment/Balance";
+import { useGetHistory } from "@/hooks/useGetHistory";
+import { useGetPayments } from "@/hooks/useGetPayments";
+import { Payment } from "../hooks/Payment";
+
+function History({ address }: { address: `0x${string}` }) {
+  const { history, isError, error, isLoading, isSuccess } =
+    useGetHistory(address);
+  if (isLoading) {
+    return <div>loading</div>;
+  }
+  if (isError) {
+    return <div>{JSON.stringify(error)}</div>;
+  }
+  if (isSuccess) {
+    return <div>{history.map((id,index) => <Payments key={`${id}-${index}`} id={id}/>)}</div>;
+  }
+}
+
+function Payments({id}:{id:`0x${string}`}){
+  const { payments, isError, error, isLoading, isSuccess } = useGetPayments(id);
+  if (isLoading) {
+    return <div>loading</div>;
+  }
+  if (isError) {
+    return <div>{JSON.stringify(error)}</div>;
+  }
+  if (isSuccess) {
+    return <div><Table payments={payments}/></div>;
+  }
+}
+
+function Table({ payments}:{payments:Payment[]}){
+  const data = payments.map((payment,index) => {
+    return (
+      <ul key={`${index}-${payment.receiver}`}>
+        <li>dateTime:{payment.dateTime.toString()}</li>
+        <li>token:{payment.token}</li>
+        <li>amount:{payment.amount.toString()}</li>
+        <li>payer:{payment.payer}</li>
+        <li>receiver:{payment.receiver}</li>
+        <li>status:{payment.status.toString()}</li>
+      </ul>
+    )
+  })
+  return (
+    <div>
+      {data}
+    </div>
+  )
+}
+
 export default function Home() {
-  const { address, isConnecting, isDisconnected } = useAccount();
-  if (isConnecting) return <div>Connecting…</div>;
-  if (isDisconnected) return <div>Disconnected</div>;
+  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
   let message = "production";
   const env = process.env.NODE_ENV;
   if (env == "development") {
@@ -18,7 +67,11 @@ export default function Home() {
   }
   return (
     <main className="flex min-h-screen flex-col items-center">
-      <div className="w-full p-4 text-left">
+      {isConnecting && <div><h1>Connecting…</h1></div>}
+      {isDisconnected && <div><h1>Disconnected</h1></div>}
+      {isConnected && address && <History address={address} />}
+      <>
+        {/* <div className="w-full p-4 text-left">
         <h1 className="font-medium">
           Welcome to the Microinvoice, create payments and transfer them to
           dozens of accounts at the same time
@@ -79,7 +132,8 @@ export default function Home() {
       </Link>
       <div className="w-full overflow-x-auto">
         <Invoices address={address} />
-      </div>
+      </div> */}
+      </>
     </main>
   );
 }
