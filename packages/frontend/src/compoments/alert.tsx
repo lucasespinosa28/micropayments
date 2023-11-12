@@ -1,38 +1,39 @@
-export function AlertSuccess({ message }: { message: string }): JSX.Element {
-  return (
-    <div
-      className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative shadow-md"
-      role="alert"
-    >
-      <strong className="font-bold">{message}!</strong>
-      <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M4.5 12.75l6 6 9-13.5"
-          />
-        </svg>
-      </span>
-    </div>
-  );
+const style = (type: "success" | "error" ): string => {
+  return type == "success"
+    ? "bg-green-100 border border-green-400 text-green-700"
+    : "bg-red-100 border border-red-400 text-red-700";
+};
+
+export function AlertTranscation({
+  message,
+  type,
+  hash,
+}: {
+  message: string;
+  type: "success" | "error";
+  hash?: `0x${string}`;
+}): JSX.Element {
+  const  Alert = () => {
+    switch (type) {
+      case "success":
+        return (<h1>success!</h1>)
+        case "error":
+        return (<h1>error!</h1>)
+    }  
+  }
+  return (<Alert/>)
 }
 
-export function AlertInfo({ message }: { message: string }): JSX.Element {
+const SuccessAlert = () => {
   return (
-    <div
-      className="flex flex-row bg-blue-300 border border-blue-800 rounded text-blue-800 px-4 py-3 shadow-md"
+    <a
+      className={`flex justify-between items-center ${style(type)} px-4 rounded shadow-md`}
       role="alert"
+      href={`https://explorer.celo.org/mainnet/tx/${hash}`}
+      target="_blank"
     >
       <strong className="font-bold">{message}!</strong>
-      <span className="pl-2">
+      <span className="px-4 py-3">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -44,10 +45,10 @@ export function AlertInfo({ message }: { message: string }): JSX.Element {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+            d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12"
           />
         </svg>
       </span>
-    </div>
+    </a>
   );
 }

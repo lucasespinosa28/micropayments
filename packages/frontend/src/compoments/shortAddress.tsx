@@ -1,6 +1,6 @@
 "use client";
 export function shortAddress(words: string): string {
-  const firstThreeWords = words.slice(0, 5);
-  const lastThreeWords = words.slice(-3);
+  const firstThreeWords = words.slice(0, 15);
+  const lastThreeWords = words.slice(-15);
   return `${firstThreeWords}...${lastThreeWords}`;
 }

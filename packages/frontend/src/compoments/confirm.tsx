@@ -14,7 +14,11 @@ export const Confirm = ({id,index}:{id:`0x${string}`, index:number})  => {
  
   return (
     <>
-      <button disabled={!write} onClick={() => write?.()}>
+     <button
+        className="bg-lime-500 text-white border  border-lime-700 font-bold py-2 px-2 rounded w-full  h-12 shadow-md"
+        disabled={!write}
+        onClick={() => write?.()}
+      >
       Confirm
       </button>
       {isSuccess && <WaitForTransaction hash={data.hash}/>}
