@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "story":"pnpm -r --parallel --filter='./packages/*' run storybook",
     "dev": "pnpm -r --parallel --filter='./packages/*' run dev",
     "test:e2e": "pnpm -r --parallel --filter='./packages/*' run test:e2e"
   },

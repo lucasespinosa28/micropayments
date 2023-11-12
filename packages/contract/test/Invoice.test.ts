@@ -623,7 +623,7 @@ describe("Invoice", function () {
           await invoice.write.confirm([id, BigInt(0)]);
         } catch (error: any) {
           expect(error.message.toString()).include(
-            "There are not enough tokens for payment."
+            "Payment has not received any tokens yet."
           );
         }
 
@@ -787,7 +787,7 @@ describe("Invoice", function () {
           await confirm(invoice.address, publicClient, otherAccount, 0, id);
         } catch (error: any) {
           expect(error.message.toString()).include(
-            "There are not enough tokens for payment."
+            "Payment has not received any tokens yet."
           );
         }
 
@@ -981,7 +981,7 @@ describe("Invoice", function () {
           );
         } catch (error: any) {
           expect(error.message.toString()).include(
-            "There are not enough tokens for payment."
+            "Payment has not received any tokens yet."
           );
         }
 

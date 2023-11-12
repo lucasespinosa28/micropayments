@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Payments } from "./Payments";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+
 export const Pagination = ({
   data,
   pageLimit,

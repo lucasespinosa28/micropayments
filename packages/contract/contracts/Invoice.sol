@@ -8,7 +8,7 @@ contract Invoice is Ownable {
     mapping(address => bool) internal blocked;
     mapping(bytes32 => Payment[]) internal payments;
     mapping(address => bytes32[]) internal history;
-    mapping(bytes32 => mapping(uint256 => uint256)) paymentBalance;
+    mapping(bytes32 => mapping(uint256 => uint256)) internal paymentBalance;
 
     struct Payment {
         uint256 dateTime;
@@ -20,6 +20,13 @@ contract Invoice is Ownable {
     }
 
     constructor(address initialOwner) Ownable(initialOwner) {}
+
+    function getPaymentBalance(
+        bytes32 id,
+        uint256 index
+    ) external view returns (uint256) {
+        return paymentBalance[id][index];
+    }
 
     function getHistory(
         address _address
@@ -155,6 +162,9 @@ contract Invoice is Ownable {
     }
 
     function confirm(bytes32 id, uint256 index) external {
+        if (payments[id][index].status == 0) {
+            revert("Payment has not received any tokens yet.");
+        }
         if (payments[id][index].status == 2) {
             revert("This payment has already been confirmed.");
         }
@@ -164,10 +174,6 @@ contract Invoice is Ownable {
         require(
             paymentBalance[id][index] >= payments[id][index].amount,
             "There are not enough tokens for payment."
-        );
-        require(
-            payments[id][index].status != 0,
-            "payment has not received any tokens yet."
         );
         require(
             payments[id][index].payer == msg.sender ||
@@ -208,7 +214,6 @@ contract Invoice is Ownable {
                 "Token transfer from sender failed."
             );
         }
-        delete payments[id][index];
         payments[id][index].status = 3;
     }
 }
