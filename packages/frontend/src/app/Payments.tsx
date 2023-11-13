@@ -4,11 +4,13 @@ import { Table } from "./Table";
 import { AlertError, AlertLoading } from "@/compoments/alert";
 
 export function Payments({
-  id, address,
+  id,
+  address,
 }: {
   id: `0x${string}`;
   address: `0x${string}`;
 }) {
+  //console.log(id);
   const { payments, error, isLoading, isSuccess } = useGetPayments(id);
   return (
     <>

@@ -26,5 +26,5 @@ export async function getHistory(publicClient: PublicClient, account: Account) {
   //   const result = payment;
   //   return result
   // })
-  // console.log(payments)
+  // //console.log(payments)
 }

@@ -8,7 +8,7 @@ import accounts from "./accounts.json";
 async function main() {
   const account = privateKeyToAccount(accounts[0].PrivateKey as `0x${string}`)
 
-  const client = createWalletClient({
+  const wallet = createWalletClient({
     account,
     chain: hardhat,
     transport: http()
@@ -19,7 +19,7 @@ async function main() {
     transport: http()
   })
 
-  const invoice = await client.deployContract({
+  const invoice = await wallet.deployContract({
     abi: dataInvoice.abi,
     account,
     bytecode: dataInvoice.bytecode as `0x${string}`,
@@ -30,7 +30,7 @@ async function main() {
   const invoiceReceipt = await publicClient.waitForTransactionReceipt({ hash: invoice })
   const invoiceAddress = invoiceReceipt.contractAddress;
 
-  const Token = await client.deployContract({
+  const Token = await wallet.deployContract({
     abi: dataToken.abi,
     account,
     bytecode: dataToken.bytecode as `0x${string}`
@@ -39,6 +39,18 @@ async function main() {
   console.log(`contract was deployed successfully address: ${JSON.stringify(Token)}`);
   const TokenReceipt = await publicClient.waitForTransactionReceipt({ hash: Token })
   const TokenAddress = TokenReceipt.contractAddress;
+
+  const mint = await wallet.writeContract({
+    address: TokenAddress as `0x${string}`,
+    abi: dataToken.abi,
+    functionName: "mint",
+    args: [account.address],
+  });
+
+  const receiptMint = await publicClient.waitForTransactionReceipt({
+    hash: mint,
+  });
+  console.log("Mint:", receiptMint.status);
   writeFileSync('address.json', JSON.stringify({ invoice: invoiceAddress, token: TokenAddress }), { encoding: 'utf8', flag: 'w' });
 }
 

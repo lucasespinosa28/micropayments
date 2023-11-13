@@ -5,17 +5,17 @@ import { InputValues } from "./InputValues";
 export const InputCreator = ({
   address,
   inputValues,
-  paymentRef
+  setData
 }: {
   address:`0x${string}`
   inputValues: InputValues[],
-  paymentRef:React.MutableRefObject<InputValues[]>
+  setData: React.Dispatch<React.SetStateAction<InputValues[]>>
 }) => {
+  window.localStorage.setItem("address",address);
   inputValues = inputValues.length > 0?inputValues:[];
   const length = Array.from({length: inputValues.length}, (_, i) => i);
   const [inputs, setInputs] = useState<number[]>(length);
   const [values, setValues] = useState<InputValues[]>(inputValues);
-  paymentRef.current = inputValues;
   function handleAdd() {
     const newInputs = [...inputs];
     const newValues = [...values];
@@ -39,7 +39,8 @@ export const InputCreator = ({
   };
 
   const handleSubmit = () => {
-    console.log(paymentRef.current);
+    //console.log(values)
+    setData(values)
   };
 
   return (
@@ -53,49 +54,45 @@ export const InputCreator = ({
               <input
                 type="text"
                 placeholder={address}
-                data-testid={`Payer${index}`}
+                id={`Payer${index}`}
                 value={values[index].payer}
                 onChange={(e) => {
                   const newValue = [...values];
                   newValue[index].payer = e.target.value;
                   setValues(newValue);
-                  paymentRef.current = newValue;
                 }}
               />
               <label>Amount</label>
               <input
                 type="number"
-                data-testid={`Amount${index}`}
+                id={`Amount${index}`}
                 value={values[index].amount}
                 onChange={(e) => {
                   const newValue = [...values];
                   newValue[index].amount = e.target.value;
                   setValues(newValue);
-                  paymentRef.current = newValue;
                 }}
               />
               <label>Receiver</label>
               <input
                 type="text"
-                data-testid={`Receiver${index}`}
+                id={`Receiver${index}`}
                 value={values[index].receiver}
                 onChange={(e) => {
                   const newValue = [...values];
                   newValue[index].receiver = e.target.value;
                   setValues(newValue);
-                  paymentRef.current = newValue;
                 }}
               />
               <label>Date time</label>
               <input
                 type="date"
-                data-testid={`Date${index}`}
+                id={`Date${index}`}
                 value={values[index].dateTime}
                 onChange={(e) => {
                   const newValue = [...values];
                   newValue[index].dateTime = e.target.value;
                   setValues(newValue);
-                  paymentRef.current = newValue;
                 }}
               />
               <button type="button" onClick={() => handleRemove(index)}>
@@ -104,11 +101,11 @@ export const InputCreator = ({
             </div>
           );
         })}
-      <button data-testid="add" onClick={handleAdd}>
+      <button id="addInput" onClick={handleAdd}>
         add
       </button>
       <hr />
-      <button onClick={handleSubmit}>Submit</button>
+      <button id="submit" onClick={handleSubmit}>Submit</button>
     </div>
   );
 };

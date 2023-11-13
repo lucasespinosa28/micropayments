@@ -4,7 +4,7 @@ export const AlertError = ({ error }: { error: Error; }) => {
   const [display, setDisplay] = useState<boolean>(true);
   let message: string[] = error.message.split(".");
   message = message[0].split(":");
-  console.log(error);
+  //console.log(error);
   return (
     <>
       {display ? (

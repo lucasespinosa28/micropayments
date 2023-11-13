@@ -15,7 +15,7 @@ async function main() {
   const history = await getHistory(publicClient, account);
   for (let index = 0; index < history.length; index++) {
     const payments = await getPayments(publicClient, history[index]) as Payment[]
-    console.log(payments)
+    //console.log(payments)
   }
 }
 

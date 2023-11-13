@@ -98,7 +98,7 @@ describe('AppController (e2e)', () => {
   afterAll(async () => {
     try {
       unlinkSync(file);
-      console.log('File is deleted.');
+      //console.log('File is deleted.');
     } catch (error) {
       console.error(error);
     }

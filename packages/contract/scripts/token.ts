@@ -27,7 +27,7 @@ async function main() {
     })
     const result = await client.writeContract(request)
     const receipt = await publicClient.waitForTransactionReceipt({ hash: result })
-    console.log(`mint:${receipt.status}`)
+    //console.log(`mint:${receipt.status}`)
   }
   await mint()
 
@@ -41,7 +41,7 @@ async function main() {
     })
     const result = await client.writeContract(request)
     const receipt = await publicClient.waitForTransactionReceipt({ hash: result })
-    console.log(`approve:${receipt.status}`)
+    //console.log(`approve:${receipt.status}`)
   }
 
   const balance = await publicClient.readContract({
@@ -50,7 +50,7 @@ async function main() {
     functionName: 'balanceOf',
     args:[account.address]
   })
-  console.log(`balanceOf: ${balance}`)
+  //console.log(`balanceOf: ${balance}`)
   
 }
 
