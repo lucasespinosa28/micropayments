@@ -1,4 +1,4 @@
-import { usePrepareContractWrite, useContractWrite } from "wagmi";
+import { useContractWrite } from "wagmi";
 import invoice from "../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
 import contract from "../../../contract/address.json";
 import { WaitForTransaction } from "./WaitForTransaction";

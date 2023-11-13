@@ -3,7 +3,6 @@ import { AlertError, AlertLoading } from "./alert";
 import invoice from "../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
 import contract from "../../../contract/address.json";
 import { WaitForTransaction } from "./WaitForTransaction";
-import { Dispatch, SetStateAction } from "react";
 
 export const SendPayment = ({
   id,
