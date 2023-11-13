@@ -23,16 +23,19 @@ function History({ address }: { address: `0x${string}` }) {
     return <div>{JSON.stringify(error)}</div>;
   }
   if (isSuccess) {
-    return <Pagination data={history} pageLimit={1} />;
+    return <Pagination data={history} address={address} pageLimit={1} />;
   }
 }
 
 const Pagination = ({
   data,
   pageLimit,
+  address,
+  
 }: {
   data: `0x${string}`[];
   pageLimit: number;
+  address: `0x${string}`;
 }) => {
   const [parent] = useAutoAnimate(/* optional config */);
   const [currentPage, setCurrentPage] = useState(1);
@@ -141,7 +144,7 @@ const Pagination = ({
         <Buttons />
         <div ref={parent}>
           {currentData.map((item, index) => (
-            <Payments key={`item-${item}`} id={item} />
+            <Payments key={`${item}-${index}`} id={item} address={address} />
           ))}
         </div>
         <Buttons />
@@ -150,7 +153,7 @@ const Pagination = ({
   }
   return <></>;
 };
-function Payments({ id }: { id: `0x${string}` }) {
+function Payments({ id,address }: { id: `0x${string}` , address: `0x${string}` }) {
   const { payments, isError, error, isLoading, isSuccess } = useGetPayments(id);
   if (isLoading) {
     return <div>loading</div>;
@@ -161,36 +164,15 @@ function Payments({ id }: { id: `0x${string}` }) {
   if (isSuccess) {
     return (
       <div>
-        <Table id={id} payments={payments} />
+        <Table id={id} payments={payments} address={address}/>
       </div>
     );
   }
 }
 
-function Table({ payments, id }: { payments: Payment[]; id: `0x${string}` }) {
+function Table({ payments, id ,address}: { payments: Payment[]; id: `0x${string}`, address: `0x${string}` }) {
   const data = payments.map((payment, index) => {
-    return <Row key={id + index} id={id} payment={payment} index={index} />;
-    // <div
-    //   key={`${index}-${payment.receiver}`}
-    //   className="w-full border divide-y my-4 shadow-md"
-    // >
-    //   {/* <div>
-    //     {payment.status.toString() !== "3" && (
-    //       <>
-    //         {allowanceAmount >= payment.amount ? (
-    //           <SendPayment id={id} index={index} />
-    //         ) : (
-
-    //         )}
-    //         {payment.status.toString() === "1" && (
-    //           <Confirm id={id} index={index} />
-    //         )}
-    //       </>
-    //     )}
-    //   </div> */}
-    //   <hr />
-    // </div>
-    // );
+    return <Row key={id + index} id={id} payment={payment} index={index} address={address} />;
   });
   return (
     <>
@@ -202,11 +184,6 @@ function Table({ payments, id }: { payments: Payment[]; id: `0x${string}` }) {
 
 export default function Home() {
   const { address, isConnecting, isDisconnected, isConnected } = useAccount();
-  let message = "production";
-  const env = process.env.NODE_ENV;
-  if (env == "development") {
-    message = "dev";
-  }
   return (
     <main className="flex flex-col">
       {isConnecting && (
