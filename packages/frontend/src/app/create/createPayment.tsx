@@ -6,7 +6,7 @@ import { AlertError, AlertLoading } from "../../compoments/alert";
 import { parseUnits, stringToHex } from "viem";
 import { nanoid } from "nanoid";
 import { InputValues } from "./InputValues";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 export interface ContractArgs {
   receiver: string;
@@ -18,25 +18,32 @@ export interface ContractArgs {
 
 export const WriteCreate = ({
   setId,
-  inputValues,
+  tokenAddress,
+  data,
 }: {
+  tokenAddress: `0x${string}`;
   setId: React.Dispatch<React.SetStateAction<string>>;
-  inputValues: ContractArgs[];
+  data: InputValues[];
 }) => {
-    const idRef = useRef(nanoid());
-  let dateTime: bigint[] = inputValues.map((item) =>
+  const idRef = useRef(nanoid());
+
+  let dateTime: bigint[] = data.map((item) =>
     BigInt(new Date(item.dateTime).getTime() / 1000)
   );
-  let token: `0x${string}`[] = inputValues.map((item) => item.token);
-  let amount: bigint[] = inputValues.map((item) => parseUnits(item.amount, 18));
-  let payer: `0x${string}`[] = inputValues.map(
-    (item) => item.payer as `0x${string}`
-  );
-  let receiver: `0x${string}`[] = inputValues.map(
+  let token: `0x${string}`[] = data.map(() => tokenAddress);
+  let amount: bigint[] = data.map((item) => parseUnits(item.amount, 18));
+  let payer: `0x${string}`[] = data.map((item) => item.payer as `0x${string}`);
+  let receiver: `0x${string}`[] = data.map(
     (item) => item.receiver as `0x${string}`
   );
-  console.log({first:idRef.current});
-  const { data, isLoading, isSuccess, write, error } = useContractWrite({
+
+  const {
+    data: contract,
+    isLoading,
+    isSuccess,
+    write,
+    error,
+  } = useContractWrite({
     address: contracts.invoice as `0x${string}`,
     abi: invoice.abi,
     functionName: "createPayment",
@@ -50,14 +57,13 @@ export const WriteCreate = ({
     ],
     onSuccess() {
       setId(idRef.current);
-      console.log({ before:idRef.current });
     },
   });
   return (
     <>
       <div className="flex justify-center">
         <button
-          className="w-4/5 bg-lime-500 text-white border  border-lime-700 font-bold py-2 px-2 rounded   h-12 shadow-md"
+          className="w-full bg-sky-500 text-white border  border-sky-700 font-bold py-2 px-2 rounded   h-12 shadow-md"
           disabled={!write}
           onClick={() => write?.()}
           id="create"
@@ -65,7 +71,7 @@ export const WriteCreate = ({
           Create payment list
         </button>
       </div>
-      {isSuccess && data && <WaitForTransaction hash={data.hash} />}
+      {isSuccess && contract && <WaitForTransaction hash={contract.hash} />}
       {isLoading && <AlertLoading />}
       {error && <AlertError error={error} />}
     </>

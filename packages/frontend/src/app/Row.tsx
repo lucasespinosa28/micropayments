@@ -24,7 +24,8 @@ export const Row = ({
   const [isApproved, setApproved] = useState<boolean>(false);
   const [islock, setLock] = useState<boolean>(false);
   const isReceiver = payment.receiver === address ? true : false;
-  const status = payment.status.toString();
+  const [status, setStatus] = useState(payment.status.toString());
+  console.log({ status: payment.status.toString() });
   const date = new Date(
     parseInt(payment.dateTime.toString()) * 1000
   ).toLocaleString();
@@ -32,8 +33,9 @@ export const Row = ({
   useEffect(() => {
     setLock(paymentDate > Math.floor(Date.now() / 1000) && true);
   }, [paymentDate]);
+  //console.log(id + index);
+  //console.log(localStorage.getItem(id + index));
 
-  const isPayer = payment.receiver === address ? false : true;
   return (
     <div
       key={`${index}-${payment.receiver}`}
@@ -41,7 +43,7 @@ export const Row = ({
     >
       <div className="flex justify-between">
         <p className="text-center text-sm">{date}</p>
-        <StatusIcon status={status} />
+        <StatusIcon status={islock ? "4" : status} />
       </div>
 
       <p className="font-bold">Payer</p>
@@ -80,7 +82,28 @@ export const Row = ({
       <p className="font-bold">Receiver</p>
       <p>{shortAddress(payment.receiver, 8)}</p>
       <div>
-        {status == "0" && (
+        {localStorage.getItem(id + index) === "true" ? (
+          <p>local true</p>
+        ) : (
+          <p>local false</p>
+        )}
+        {isApproved == false && localStorage.getItem(id + index) != "true" && (
+          <Approve
+            id={id + index}
+            setApproved={setApproved}
+            amount={payment.amount}
+          />
+        )}
+
+        {(localStorage.getItem(id + index) || isApproved) && status == "0" && (
+          <SendPayment
+            storage={id + index + "p"}
+            id={id}
+            index={index}
+            setStatus={setStatus}
+          />
+        )}
+        {/* {status == "0" && (
           <div>
             {isPayer && (
               <div>
@@ -96,16 +119,18 @@ export const Row = ({
               </div>
             )}
           </div>
-        )}
+        )} */}
       </div>
       <div>
-        {status == "1" && !islock &&(
+        <h1>status:{status}</h1>
+        {((status == "1" && !islock) ||
+          localStorage.getItem(id + index + "p")) && (
           <Confirm isReceiver={isReceiver} id={id} index={index} />
         )}
       </div>
       {islock && (
         <div>
-          <div className="flex justify-center">
+          <div className="flex mt-1 justify-center">
             <button className="w-4/5 bg-amber-500 text-white border  border-amber-700 font-bold py-2 px-2 rounded h-12 shadow-md">
               <span className="flex flex-row justify-center items-center">
                 <Countdown
