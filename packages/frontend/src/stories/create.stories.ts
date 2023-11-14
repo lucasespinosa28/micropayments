@@ -1,17 +1,15 @@
-import { expect } from "@storybook/jest";
 import { within, userEvent } from "@storybook/testing-library";
 import { InputCreator } from "../app/create/InputCreator";
 import type { Meta, StoryObj } from "@storybook/react";
 import { faker } from "@faker-js/faker";
-import { generateRandomHex } from '../../../contract/test/generateRandomHex';
-import { useRef } from "react";
+import { generateRandomHex } from "../../../contract/test/generateRandomHex";
 const meta = {
   title: "Example/Creator",
   component: InputCreator,
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"]
+  tags: ["autodocs"],
 } satisfies Meta<typeof InputCreator>;
 
 export default meta;
@@ -32,7 +30,7 @@ export const Main: Story = {
       for (let index = 0; index < 10; index++) {
         await userEvent.type(
           canvas.getByTestId(`Receiver${index}`),
-          generateRandomHex()
+          generateRandomHex(),
         );
       }
     });
@@ -46,10 +44,7 @@ export const Main: Story = {
     });
     await step("add datetimne", async () => {
       for (let index = 0; index < 10; index++) {
-        await userEvent.type(
-          canvas.getByTestId(`Date${index}`),
-          "2023-11-12"
-        );
+        await userEvent.type(canvas.getByTestId(`Date${index}`), "2023-11-12");
       }
     });
   },

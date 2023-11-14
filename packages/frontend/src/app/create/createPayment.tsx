@@ -1,12 +1,13 @@
 import { useContractWrite } from "wagmi";
 import invoice from "../../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
 import contracts from "../../../../contract/address.json";
-import { WaitForTransaction } from "../../compoments/WaitForTransaction";
-import { AlertError, AlertLoading } from "../../compoments/alert";
+import { WaitForTransaction } from "../../compoments/web3/WaitForTransaction";
+import { AlertError, AlertLoading } from "../../compoments/statics/alert";
 import { parseUnits, stringToHex } from "viem";
 import { nanoid } from "nanoid";
 import { InputValues } from "./InputValues";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { ButtonPrimary } from "@/compoments/inputs/buttons";
 
 export interface ContractArgs {
   receiver: string;
@@ -26,15 +27,17 @@ export const WriteCreate = ({
   data: InputValues[];
 }) => {
   const idRef = useRef(nanoid());
-
-  let dateTime: bigint[] = data.map((item) =>
-    BigInt(new Date(item.dateTime).getTime() / 1000)
+  const [isDisabled, setDisabled] = useState<boolean>(false);
+  const dateTime: bigint[] = data.map((item) =>
+    BigInt(new Date(item.dateTime).getTime() / 1000),
   );
-  let token: `0x${string}`[] = data.map(() => tokenAddress);
-  let amount: bigint[] = data.map((item) => parseUnits(item.amount, 18));
-  let payer: `0x${string}`[] = data.map((item) => item.payer as `0x${string}`);
-  let receiver: `0x${string}`[] = data.map(
-    (item) => item.receiver as `0x${string}`
+  const token: `0x${string}`[] = data.map(() => tokenAddress);
+  const amount: bigint[] = data.map((item) => parseUnits(item.amount, 18));
+  const payer: `0x${string}`[] = data.map(
+    (item) => item.payer as `0x${string}`,
+  );
+  const receiver: `0x${string}`[] = data.map(
+    (item) => item.receiver as `0x${string}`,
   );
 
   const {
@@ -57,22 +60,24 @@ export const WriteCreate = ({
     ],
     onSuccess() {
       setId(idRef.current);
+      setDisabled(true);
     },
   });
   return (
     <>
-      <div className="flex justify-center">
-        <button
-          className="w-full bg-sky-500 text-white border  border-sky-700 font-bold py-2 px-2 rounded   h-12 shadow-md"
-          disabled={!write}
-          onClick={() => write?.()}
-          id="create"
-        >
-          Create payment list
-        </button>
-      </div>
+      <ButtonPrimary
+        id="create"
+        onClick={() => write?.()}
+        disabled={isDisabled}
+      >
+        <p>Create payment list</p>
+      </ButtonPrimary>
       {isSuccess && contract && <WaitForTransaction hash={contract.hash} />}
-      {isLoading && <AlertLoading />}
+      {isLoading && (
+        <AlertLoading>
+          <p>Loading...</p>
+        </AlertLoading>
+      )}
       {error && <AlertError error={error} />}
     </>
   );

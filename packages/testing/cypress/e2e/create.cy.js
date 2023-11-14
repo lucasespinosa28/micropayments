@@ -6,13 +6,13 @@ describe('create spec', () => {
         cy.viewport('iphone-xr')
         cy.visit('/create')
         // cy.get('#newList').click()
-        for (let index = 0; index < 3; index++) {
+        for (let index = 0; index < 4; index++) {
             cy.get("#addInput").click();
             cy.get("#Amount" + index).clear().type(faker.number.float({ min: 0.5, max: 10, precision: 0.01 }))
             cy.get("#Receiver" + index).type(generateRandomHex())
             cy.get("#Date" + index).type("2023-11-13")
-            if (index == 1) {
-                cy.get("#Date" + index).type("2023-11-14")
+            if (index == 3) {
+                cy.get("#Date" + index).type("2023-11-20")
             }
         }
         // cy.get("#submit").click();
@@ -20,7 +20,7 @@ describe('create spec', () => {
         cy.scrollTo('bottom')
         cy.get("#create").click();
         cy.scrollTo('bottom')
-        cy.get("#payId").click();
+        // cy.get("#payId").click();
 
         // cy.get(".approve").each(($el) => {
         //     cy.wrap($el).click();
@@ -32,6 +32,6 @@ describe('create spec', () => {
         //     cy.wait(1500);
         // });
 
-        cy.get(".cancel").first().click();
+        // cy.get(".cancel").first().click();
     })
 })

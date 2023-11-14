@@ -1,24 +1,21 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { InputValues } from "./InputValues";
+import { Remove } from "../../compoments/inputs/remove";
+import { Input } from "../../compoments/inputs/Input";
+type Name = "amount" | "dateTime" | "receiver" | "payer";
+export type Type = "number" | "text" | "date";
 
-// function validAddress(address: `0x${string}`) {
-//   return /^0x[a-fA-F0-9]{40}$/.test(address)
-// }
 export const InputCreator = ({
   address,
-  inputValues,
   setData,
 }: {
   address: `0x${string}`;
-  inputValues: InputValues[];
   setData: React.Dispatch<React.SetStateAction<InputValues[]>>;
 }) => {
-  window.localStorage.setItem("address", address);
-  inputValues = inputValues.length > 0 ? inputValues : [];
-  const length = Array.from({ length: inputValues.length }, (_, i) => i);
-  const [inputs, setInputs] = useState<number[]>(length);
-  const [values, setValues] = useState<InputValues[]>(inputValues);
+  const [inputs, setInputs] = useState<number[]>([]);
+  const [values, setValues] = useState<InputValues[]>([]);
+
   function handleAdd() {
     const newInputs = [...inputs];
     const newValues = [...values];
@@ -41,12 +38,16 @@ export const InputCreator = ({
     setValues(newValues);
   };
 
-  const handleInput = (event:React.ChangeEvent<HTMLInputElement>,index:number) =>{
+  const handleInput = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+    name: Name,
+  ) => {
     const newValue = [...values];
-    newValue[index].payer = event.target.value;
+    newValue[index][name] = event.target.value;
     setValues(newValue);
     setData(values);
-  }
+  };
 
   return (
     <div className="flex flex-col  w-full">
@@ -59,97 +60,47 @@ export const InputCreator = ({
             >
               <div className="flex justify-between">
                 <span className="m-1 font-bold">#{index + 1}</span>
-                <button
-                  className="m-1 bg-red-500 text-white border rounded border-red-700"
-                  type="button"
+                <Remove
+                  id={"remove" + index}
                   onClick={() => handleRemove(index)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
+                />
               </div>
-              <span className="h-2"></span>
-              <div>
-                <label className="text-white bg-sky-500 rounded border-sky-500 p-1 ml-2">
-                  Payer Address
-                </label>
-              </div>
-
-              <input
+              <Input
                 type="text"
-                className="border px-1 mx-1 rounded border-sky-500 "
-                placeholder={address}
-                id={`Payer${index}`}
+                id={"Payer" + index}
+                index={index}
                 value={values[index].payer}
-                onChange={(event) => handleInput(event, index)}
-              />
-              <span className="h-2"></span>
-              <div>
-                <label className="text-white bg-sky-500 rounded border-sky-500 p-1 ml-2">
-                  Token Amount
-                </label>
-              </div>
-              <input
+                onChange={(event) => handleInput(event, index, "payer")}
+              >
+                <> Payer Address</>
+              </Input>
+              <Input
                 type="number"
-                className="border px-1 mx-1 rounded border-sky-500 "
-                id={`Amount${index}`}
+                id={"Amount" + index}
+                index={index}
                 value={values[index].amount}
-                onChange={(e) => {
-                  const newValue = [...values];
-                  newValue[index].amount = e.target.value;
-                  setValues(newValue);
-                  setData(values);
-                }}
-              />
-              <span className="h-2"></span>
-              <div>
-                <label className="text-white bg-sky-500 rounded border-sky-500 p-1 ml-2">
-                  Receiver address
-                </label>
-              </div>
-
-              <input
+                onChange={(event) => handleInput(event, index, "amount")}
+              >
+                <> Token Amount</>
+              </Input>
+              <Input
                 type="text"
-                className="border px-1 mx-1 rounded border-sky-500 "
-                id={`Receiver${index}`}
+                id={"Receiver" + index}
+                index={index}
                 value={values[index].receiver}
-                onChange={(e) => {
-                  const newValue = [...values];
-                  newValue[index].receiver = e.target.value;
-                  setValues(newValue);
-                  setData(values);
-                }}
-              />
-              <span className="h-2" />
-              <div>
-                <label className="text-white bg-sky-500 rounded border-sky-500 p-1 ml-2">
-                  Date to unlock the payment
-                </label>
-              </div>
-              <input
+                onChange={(event) => handleInput(event, index, "receiver")}
+              >
+                <>Receiver address</>
+              </Input>
+              <Input
                 type="date"
-                className="border px-1 mx-1 rounded border-sky-500 "
-                id={`Date${index}`}
+                id={"Date" + index}
+                index={index}
                 value={values[index].dateTime}
-                onChange={(e) => {
-                  const newValue = [...values];
-                  newValue[index].dateTime = e.target.value;
-                  setValues(newValue);
-                  setData(values);
-                }}
-              />
+                onChange={(event) => handleInput(event, index, "dateTime")}
+              >
+                <>Date to unlock the payment</>
+              </Input>
             </div>
           );
         })}

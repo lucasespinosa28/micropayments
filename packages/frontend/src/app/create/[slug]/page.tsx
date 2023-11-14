@@ -1,11 +1,13 @@
 "use client";
 import { stringToHex } from "viem";
 import { Payments } from "../../../app/Payments";
+import { Menu } from "@/compoments/statics/menu";
 
 export default function Home({ params }: { params: { slug: string } }) {
   const address = window.localStorage.getItem("address");
   return (
-    <div>
+    <main>
+      <Menu />
       {address && (
         <Payments
           key={params.slug}
@@ -13,6 +15,6 @@ export default function Home({ params }: { params: { slug: string } }) {
           address={address as `0x${string}`}
         />
       )}
-    </div>
+    </main>
   );
 }

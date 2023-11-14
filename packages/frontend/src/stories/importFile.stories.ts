@@ -6,11 +6,10 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"]
+  tags: ["autodocs"],
 } satisfies Meta<typeof ImportFile>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Main: Story = {
-};
+export const Main: Story = {};

@@ -1,6 +1,6 @@
 import { formatUnits } from "viem";
 import { useToken } from "wagmi";
-import { AlertError, AlertLoading } from "./alert";
+import { AlertError, AlertLoading } from "./statics/alert";
 
 export const TokenInfo = ({
   address,

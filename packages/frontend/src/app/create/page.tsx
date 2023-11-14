@@ -1,50 +1,27 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { InputCreator } from "./InputCreator";
-import { ImportFile } from "./importFile";
 import { InputValues } from "./InputValues";
-import { SelectToken } from "./selectToken";
+import { SelectToken } from "../../compoments/inputs/selectToken";
 import contract from "../../../../../packages/contract/address.json";
 import { useAccount } from "wagmi";
 import { WriteCreate } from "./createPayment";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { QRCodeSVG } from "qrcode.react";
 import Link from "next/link";
+import { Menu } from "../../compoments/statics/menu";
 
 export default function Home() {
   const { address } = useAccount();
-
   const [data, setData] = useState<InputValues[]>([]);
-  // const [args, setArgs] = useState<any[]>([]);
   const tokenRef = useRef<`0x${string}`>(contract.token as `0x${string}`);
   const [id, setId] = useState<string>("");
-  // const [isAction, setAction] = useState<number>(0);
-  const [json, setJson] = useState<string>();
-  // function handleRef() {
-  //   const payments = data.map((item) => ({ ...item, token: tokenRef.current }));
-  //   setArgs(payments);
-  //   setJson(JSON.stringify(payments));
-  // }
 
   return (
-    <main className="flex min-h-screen flex-col items-center">
+    <main className="flex flex-col items-center">
+      <Menu />
       <SelectToken tokenRef={tokenRef} />
-      {address && (
-        <InputCreator setData={setData} address={address} inputValues={[]} />
-      )}
-      {/* {isAction == 0 && <ImportFile setData={setData} setAction={setAction} />}
-      {isAction == 0 && (
-        <button id="newList" onClick={() => setAction(2)}>
-          Create a new payment list
-        </button>
-      )}
-      {isAction == 1 && address != undefined && (
-        <InputCreator setData={setData} address={address} inputValues={data} />
-      )}
-      {isAction == 2 && address != undefined && (
-        <InputCreator setData={setData} address={address} inputValues={[]} />
-      )} */}
-      {/* <button id="current" onClick={handleRef}>current</button> */}
+      {address && <InputCreator setData={setData} address={address} />}
       {data.length > 0 && (
         <WriteCreate
           setId={setId}

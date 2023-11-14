@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { InputValues } from "./InputValues";
-import { InputCreator } from "./InputCreator";
+// import { InputCreator } from "./InputCreator";
 
 export const ImportFile = ({
   setData,

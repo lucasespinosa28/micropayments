@@ -1,35 +1,35 @@
 "use client";
 import { useState } from "react";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Payments } from "./Payments";
 
-
 export const Pagination = ({
-  data, pageLimit, address,
+  data,
+  pageLimit,
+  address,
 }: {
   data: `0x${string}`[];
   pageLimit: number;
   address: `0x${string}`;
 }) => {
-  const [parent] = useAutoAnimate( /* optional config */);
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(data.length / pageLimit);
   const currentData = data.slice(
     (currentPage - 1) * pageLimit,
-    currentPage * pageLimit
+    currentPage * pageLimit,
   );
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrentPage(Number(event.target.value));
   };
 
-  let options = Array.from({ length: totalPages }, (_, index) => index + 1).map(
-    (item, index) => (
-      <option key={`${item}-${index}`} value={item}>
-        {item}
-      </option>
-    )
-  );
+  const options = Array.from(
+    { length: totalPages },
+    (_, index) => index + 1,
+  ).map((item, index) => (
+    <option key={`${item}-${index}`} value={item}>
+      {item}
+    </option>
+  ));
   const Buttons = () => {
     return (
       <div className="flex justify-center items-center">
@@ -45,7 +45,8 @@ export const Pagination = ({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+              d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5"
+            />
           </svg>
         </button>
         <button
@@ -63,7 +64,8 @@ export const Pagination = ({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M15.75 19.5L8.25 12l7.5-7.5" />
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
           </svg>
         </button>
         <select value={currentPage} onChange={handleChange}>
@@ -84,7 +86,8 @@ export const Pagination = ({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              d="M8.25 4.5l7.5 7.5-7.5 7.5"
+            />
           </svg>
         </button>
         <button
@@ -102,7 +105,8 @@ export const Pagination = ({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+              d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
+            />
           </svg>
         </button>
       </div>
@@ -112,11 +116,9 @@ export const Pagination = ({
     return (
       <div>
         <Buttons />
-        <div ref={parent}>
-          {currentData.map((item, index) => (
-            <Payments key={`${item}-${index}`} id={item} address={address} />
-          ))}
-        </div>
+        {currentData.map((item, index) => (
+          <Payments key={`${item}-${index}`} id={item} address={address} />
+        ))}
         <Buttons />
       </div>
     );

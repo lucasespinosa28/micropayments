@@ -105,11 +105,9 @@ async function payment0(wallet: any, account: any, publicClient: any) {
   for (let index = 0; index < number; index++) {
     const timestampSeconds = Math.floor(Date.now() / 1000);
     if (index % 2 == 1) {
+      dateTime.push(BigInt(timestampSeconds) + 100000n);
+    } else {
       dateTime.push(BigInt(timestampSeconds));
-
-    }else{
-      dateTime.push(BigInt(timestampSeconds)+100000n);
-
     }
     stable.push(contracts.token as `0x${string}`);
     amount.push(parseUnits(faker.number.float({ min: 0.5, max: 10, precision: 0.01 }).toString(), 18));
