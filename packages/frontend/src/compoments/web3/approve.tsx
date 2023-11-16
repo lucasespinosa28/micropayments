@@ -1,47 +1,47 @@
 import { useContractWrite } from "wagmi";
-import token from "../../../../contract/artifacts/contracts/Token.sol/Token.json";
+import { abi } from "../../../../contract/artifacts/contracts/Token.sol/Token.json";
 import contract from "../../../../contract/address.json";
 import { WaitForTransaction } from "./WaitForTransaction";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useContext, useState } from "react";
 import { AlertError, AlertLoading } from "../statics/alert";
 import { ButtonPrimary } from "../inputs/buttons";
+import { reloading } from "@/app/Payments";
 
 export const Approve = ({
+  token,
   amount,
-  setStatus,
-  id,
+  label = "Approve",
   index = 0,
 }: {
+  token: `0x${string}`;
   amount: bigint;
-  setStatus: Dispatch<SetStateAction<bigint>>;
+  label?: string;
   id: string;
   index?: number;
 }) => {
   const [isDisplayed, setDisplayed] = useState<boolean>(false);
+  const { reload, setReload } = useContext(reloading);
   const { write, isSuccess, isLoading, data, error } = useContractWrite({
-    address: contract.token as `0x${string}`,
-    abi: token.abi,
+    address: token,
+    abi: abi,
     functionName: "approve",
     args: [contract.invoice as `0x${string}`, amount],
     onSuccess() {
-      setStatus(0n);
-      localStorage.setItem(id, "true");
       setDisplayed(true);
+      if (setReload) {
+        setReload(!reload);
+      }
     },
   });
   return (
     <>
-      {isDisplayed || localStorage.getItem(id) == "true" ? (
-        <></>
-      ) : (
-        <ButtonPrimary
-          id={"approve" + index}
-          onClick={() => write?.()}
-          disabled={isDisplayed}
-        >
-          <>Approve</>
-        </ButtonPrimary>
-      )}
+      <ButtonPrimary
+        id={"approve" + index}
+        onClick={() => write?.()}
+        disabled={isDisplayed}
+      >
+        <>{label}</>
+      </ButtonPrimary>
       {isSuccess && data && <WaitForTransaction hash={data.hash} />}
       {isLoading && (
         <AlertLoading>

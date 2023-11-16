@@ -6,7 +6,8 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
-const style = "flex flex-row w-full my-1 text-white border font-bold py-2 px-2 rounded shadow-md disabled:opacity-25";
+const style =
+  "flex flex-row w-full my-1 text-white border font-bold py-2 px-2 rounded shadow-md disabled:opacity-25";
 
 export const ButtonPrimary = ({
   id,
@@ -17,9 +18,7 @@ export const ButtonPrimary = ({
   return (
     <button
       id={id}
-      className={
-        "bg-sky-500 border-sky-700"+style
-      }
+      className={"bg-sky-500 border-sky-700" + style}
       disabled={disabled}
       onClick={onClick}
     >
@@ -37,7 +36,7 @@ export const ButtonSecondary = ({
   return (
     <button
       id={id}
-      className={"bg-lime-500 border-lime-700"+style}
+      className={"bg-lime-500 border-lime-700" + style}
       disabled={disabled}
       onClick={onClick}
     >
@@ -55,9 +54,7 @@ export const ButtonError = ({
   return (
     <button
       id={id}
-      className={
-        "bg-red-500 border-red-700"+style
-      }
+      className={"bg-red-500 border-red-700" + style}
       disabled={disabled}
       onClick={onClick}
     >
@@ -75,9 +72,7 @@ export const ButtonWarning = ({
   return (
     <button
       id={id}
-      className={
-        "bg-amber-500 border-amber-700"+style
-      }
+      className={"bg-amber-500 border-amber-700" + style}
       disabled={disabled}
       onClick={onClick}
     >

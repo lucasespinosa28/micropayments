@@ -3,8 +3,16 @@ import { useGetPayments } from "@/hooks/useGetPayments";
 import { AlertError, AlertLoading } from "@/compoments/statics/alert";
 import { hexToString } from "viem";
 import { Table } from "./table";
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { createContext, useEffect, useRef, useState } from "react";
+import { Payment } from "@/hooks/Payment";
+import { Approve } from "@/compoments/web3/approve";
+import { SendAllPayment } from "@/compoments/web3/sendPaymentAll";
+
+type Filter = {
+  index: bigint;
+  unlock: boolean;
+};
 
 export function Payments({
   id,
@@ -13,25 +21,38 @@ export function Payments({
   id: `0x${string}`;
   address: `0x${string}`;
 }) {
+  const [reload, setReload] = useState<boolean>(false);
+
   const { payments, error, isLoading, isSuccess } = useGetPayments(id);
-  const [rows, setRows] = useState<JSX.Element[]>();
-  useEffect(() => {
-    if (isSuccess && payments) {
-      const row = payments.map((payment, index) => {
-        return (
-          <Table
-            key={id + index}
-            id={id}
-            payment={payment}
-            index={index}
-            address={address}
-          />
-        );
-      });
-      setRows(row);
-    }
-  }, [address, id, isSuccess, payments]);
+  const [all, setAll] = useState<boolean>();
+  const total = useRef<bigint>(0n);
+  const islocked = useRef<bigint[]>();
   const idString = hexToString(id, { size: 32 });
+  useEffect(() => {
+    if (payments) {
+      islocked.current = payments
+        .map((item, index) => {
+          return {
+            index: BigInt(index),
+            unlock:
+              item.dateTime > Math.floor(Date.now() / 1000) ? false : true,
+          };
+        })
+        .filter((item: Filter) => item.unlock)
+        .map((item) => item.index);
+      total.current = payments.reduce(
+        (total: bigint, num: Payment) => total + num.amount,
+        0n,
+      );
+
+      setAll(
+        payments.every(
+          (value: Payment, index: number, array: Payment[]) =>
+            value.token === array[index].token,
+        ),
+      );
+    }
+  }, [payments]);
   return (
     <>
       {isLoading && (
@@ -42,6 +63,19 @@ export function Payments({
       {error && <AlertError error={error} />}
       {isSuccess && (
         <>
+          {total && (
+            <div className="flex flex-col m-4">
+              <Approve
+                label="Approve All"
+                token={payments[0].token}
+                id={id}
+                amount={total.current}
+              />
+              {islocked.current && all && (
+                <SendAllPayment setReload={setReload} reload={reload} id={id} index={islocked.current} />
+              )}
+            </div>
+          )}
           <Link
             className="flex justify-center font-bold mt-2 text-2xl text-center drop-shadow-md"
             id="invoice"
@@ -68,7 +102,19 @@ export function Payments({
               />
             </svg>
           </Link>
-          <>{rows}</>;
+          {isSuccess &&
+            payments &&
+            payments.map((payment, index) => {
+              return (
+                <Table
+                  key={id + index}
+                  id={id}
+                  payment={payment}
+                  index={index}
+                  address={address}
+                />
+              );
+            })}
         </>
       )}
     </>

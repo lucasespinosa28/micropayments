@@ -59,7 +59,7 @@ interface Error {
 export const AlertError = ({ error }: { error: Error }) => {
   const [display, setDisplay] = useState<boolean>(true);
   let message: string[] = ["Unknown error", "!"];
-
+  console.log(error);
   if (error.message.includes(".") && error.message.includes(":")) {
     message = error.message.split(".")[0].split(":");
   }

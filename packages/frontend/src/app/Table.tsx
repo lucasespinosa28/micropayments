@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Payment } from "../hooks/Payment";
-import { TokenInfo } from "../compoments/tokenInfo";
+import { TokenInfo } from "../compoments/web3/tokenInfo";
 import { SendPayment } from "../compoments/web3/sendPayment";
 import { shortAddress } from "../compoments/shortAddress";
 import { Approve } from "@/compoments/web3/approve";
@@ -10,6 +10,7 @@ import { Cancel } from "@/compoments/web3/cancel";
 import { StatusIcon } from "./StatusIcon";
 import Countdown from "react-countdown";
 import { ButtonWarning } from "../compoments/inputs/buttons";
+import { PaymentBalance } from "@/compoments/web3/paymentBalance";
 
 export const Table = ({
   payment,
@@ -23,8 +24,9 @@ export const Table = ({
   index: number;
 }) => {
   const [islock, setLock] = useState<boolean>(false);
+  const [decimals, setDecimals] = useState<number>();
+  const [balance, setBalance] = useState<bigint>(-0n);
   const isReceiver = payment.receiver === address ? true : false;
-  const [status, setStatus] = useState<bigint>(payment.status);
   const date = new Date(
     parseInt(payment.dateTime.toString()) * 1000
   ).toLocaleString();
@@ -40,7 +42,7 @@ export const Table = ({
     >
       <div className="flex justify-between">
         <p className="text-center text-sm">{date}</p>
-        <StatusIcon status={islock ? "4" : status.toString()} />
+        <StatusIcon status={islock ? "4" : payment.status.toString()} />
       </div>
 
       <p className="font-bold">Payer</p>
@@ -60,7 +62,19 @@ export const Table = ({
         </svg>
       </div>
       <div>
-        <TokenInfo amount={payment.amount} address={payment.token} />
+        <TokenInfo
+          amount={payment.amount}
+          address={payment.token}
+          setDecimals={setDecimals}
+        />
+        {decimals && (
+          <PaymentBalance
+            setBalance={setBalance}
+            id={id}
+            index={index}
+            decimals={decimals}
+          />
+        )}
       </div>
       <div className="flex justify-center">
         <svg
@@ -79,23 +93,18 @@ export const Table = ({
       <p className="font-bold">Receiver</p>
       <p>{shortAddress(payment.receiver, 8)}</p>
       <div className="flex flex-col m-4">
-        {(status == 0n || localStorage.getItem(id + index) != "true") && (
-          <Approve
-            setStatus={setStatus}
-            id={id + index}
-            amount={payment.amount}
-          />
-        )}
-        {status == 0n && localStorage.getItem(id + index) == "true" && (
-          <SendPayment id={id} index={index} setStatus={setStatus} />
-        )}
-        {status == 1n && !islock && (
-          <Confirm
-            isReceiver={isReceiver}
-            id={id}
-            index={index}
-            setStatus={setStatus}
-          />
+        text{balance.toString()}
+        {balance.toString() === "0" ? (
+          <>
+            <Approve
+              token={payment.token}
+              id={id + index}
+              amount={payment.amount}
+            />
+            <SendPayment id={id} index={index} />
+          </>
+        ) : (
+         <>{!islock && <Confirm isReceiver={isReceiver} id={id} index={index} />}</>
         )}
         {islock && (
           <ButtonWarning id={"count" + index}>
@@ -123,9 +132,7 @@ export const Table = ({
             </span>
           </ButtonWarning>
         )}
-        {(status == 0n || status == 1n) && (
-          <Cancel id={id} index={index} setStatus={setStatus} />
-        )}
+        <Cancel id={id} index={index} />
       </div>
     </div>
   );

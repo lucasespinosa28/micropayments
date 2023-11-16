@@ -1,46 +1,44 @@
 import { useContractWrite } from "wagmi";
+import { AlertError, AlertLoading } from "../statics/alert";
 import invoice from "../../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
 import contract from "../../../../contract/address.json";
 import { WaitForTransaction } from "./WaitForTransaction";
-import { AlertError, AlertLoading } from "../statics/alert";
-import { useContext, useState } from "react";
-import { ButtonSecondary } from "../inputs/buttons";
-import { reloading } from "@/app/Payments";
+import { useState } from "react";
+import { ButtonPrimary } from "../inputs/buttons";
 
-export const Confirm = ({
+export const SendAllPayment = ({
   id,
   index,
-  isReceiver,
 }: {
   id: `0x${string}`;
-  index: number;
-  isReceiver: boolean;
+  index: bigint[];
 }) => {
   const [isDisplayed, setDisplayed] = useState<boolean>(false);
-  const { reload, setReload } = useContext(reloading);
-  const label: string = isReceiver ? "Confirm" : "Send payment";
+
   const { data, isLoading, isSuccess, write, error } = useContractWrite({
     address: contract.invoice as `0x${string}`,
     abi: invoice.abi,
-    functionName: "confirm",
-    args: [id, BigInt(index)],
+    functionName: "sendAllPayment",
+    args: [id, index],
     onSuccess() {
       setDisplayed(true);
-      if(setReload){
-        setReload(!reload);
-      }
+    },
+    onError(error) {
+      console.error(error);
     },
   });
-
+  if (error) {
+    console.error(error);
+  }
   return (
     <>
-      <ButtonSecondary
+      <ButtonPrimary
         id={"approve" + index}
         onClick={() => write?.()}
         disabled={isDisplayed}
       >
-        <>{label}</>
-      </ButtonSecondary>
+        <>Deposit tokens for all</>
+      </ButtonPrimary>
       {isSuccess && data && <WaitForTransaction hash={data.hash} />}
       {isLoading && (
         <AlertLoading>

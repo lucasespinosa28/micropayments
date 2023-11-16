@@ -3,7 +3,7 @@ export const StatusIcon = ({ status }: { status: string }) => {
   return (
     <>
       {status === "0" && (
-        <span className="bg-lime-500 text-white rounded-bl-lg w-6 h-6">
+        <span className="bg-slate-500 text-white rounded-bl-lg w-6 h-6">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -21,7 +21,7 @@ export const StatusIcon = ({ status }: { status: string }) => {
         </span>
       )}
       {status === "1" && (
-        <span className="bg-lime-500 text-white rounded-bl-lg w-6 h-6">
+        <span className="bg-blue-500 text-white rounded-bl-lg w-6 h-6">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

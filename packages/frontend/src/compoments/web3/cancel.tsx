@@ -3,30 +3,25 @@ import invoice from "../../../../contract/artifacts/contracts/Invoice.sol/Invoic
 import contract from "../../../../contract/address.json";
 import { WaitForTransaction } from "./WaitForTransaction";
 import { AlertError, AlertLoading } from "../statics/alert";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useContext, useState } from "react";
 import { ButtonError } from "../inputs/buttons";
+import { reloading } from "@/app/Payments";
 
-export const Cancel = ({
-  id,
-  index,
-  setStatus,
-}: {
-  id: `0x${string}`;
-  index: number;
-  setStatus: Dispatch<SetStateAction<bigint>>;
-}) => {
+export const Cancel = ({ id, index }: { id: `0x${string}`; index: number }) => {
   const [isDisabled, SetDisabled] = useState<boolean>(false);
+  const { reload, setReload } = useContext(reloading);
   const { data, isSuccess, write, error, isLoading } = useContractWrite({
     address: contract.invoice as `0x${string}`,
     abi: invoice.abi,
     functionName: "cancel",
     args: [id, BigInt(index)],
     onSuccess() {
-      setStatus(3n);
       SetDisabled(true);
+      if (setReload) {
+        setReload(!reload);
+      }
     },
   });
-
   return (
     <>
       <ButtonError id="create" onClick={() => write?.()} disabled={isDisabled}>
