@@ -1,5 +1,4 @@
-import invoice from "../../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
-//import contract from "../../../../contract/address.json";
+import { abi } from "../../Invoice.json";
 import { useContractRead } from "wagmi";
 import { AlertError, AlertLoading } from "../statics/alert";
 import { formatUnits } from "viem";
@@ -18,7 +17,7 @@ export const PaymentBalance = ({
 }) => {
   const { data, isLoading, isSuccess, isFetching, error } = useContractRead({
     address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
-    abi: invoice.abi,
+    abi: abi,
     functionName: "getPaymentBalance",
     args: [id, BigInt(index)],
     watch: true,
@@ -58,7 +57,7 @@ export const PaymentBalance = ({
 
 //   const { data, isLoading, isSuccess, write, error } = useContractWrite({
 //     address: contract.invoice as `0x${string}`,
-//     abi: invoice.abi,
+//     abi: abi,
 //     functionName: "sendPayment",
 //     args: [id, BigInt(index)],
 //     onSuccess() {

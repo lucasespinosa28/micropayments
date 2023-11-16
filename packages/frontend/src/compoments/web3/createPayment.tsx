@@ -1,11 +1,10 @@
 import { useContractWrite } from "wagmi";
-import invoice from "../../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
-// import contracts from "../../../../contract/address.json";
-import { WaitForTransaction } from "../../compoments/web3/WaitForTransaction";
-import { AlertError, AlertLoading } from "../../compoments/statics/alert";
+import { abi } from "../../Invoice.json";
+import { WaitForTransaction } from "./WaitForTransaction";
+import { AlertError, AlertLoading } from "../statics/alert";
 import { parseUnits, stringToHex } from "viem";
 import { nanoid } from "nanoid";
-import { InputValues } from "./InputValues";
+import { InputValues } from "../../app/create/InputValues";
 import { useRef, useState } from "react";
 import { ButtonPrimary } from "@/compoments/inputs/buttons";
 
@@ -57,7 +56,7 @@ export const WriteCreate = ({
     error,
   } = useContractWrite({
     address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
-    abi: invoice.abi,
+    abi: abi,
     functionName: "createPayment",
     args: [
       stringToHex(idRef.current, { size: 32 }),

@@ -1,6 +1,6 @@
 "use client";
 import { Alfajores, Celo } from "@celo/rainbowkit-celo/chains";
-import { RainbowKitProvider, getDefaultWallets } from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";

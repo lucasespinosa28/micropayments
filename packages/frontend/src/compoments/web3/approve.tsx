@@ -1,6 +1,5 @@
 import { useContractWrite } from "wagmi";
-import { abi } from "../../../../contract/artifacts/contracts/Token.sol/Token.json";
-// import contract from "../../../../contract/address.json";
+import { abi } from "../../Token.json";
 import { WaitForTransaction } from "./WaitForTransaction";
 import {  useState } from "react";
 import { AlertError, AlertLoading } from "../statics/alert";

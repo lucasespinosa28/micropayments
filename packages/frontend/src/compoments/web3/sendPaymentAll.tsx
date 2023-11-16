@@ -1,7 +1,6 @@
 import { useContractWrite } from "wagmi";
 import { AlertError, AlertLoading } from "../statics/alert";
-import invoice from "../../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
-//import contract from "../../../../contract/address.json";
+import { abi } from "../../Invoice.json";
 import { WaitForTransaction } from "./WaitForTransaction";
 import { useState } from "react";
 import { ButtonPrimary } from "../inputs/buttons";
@@ -17,7 +16,7 @@ export const SendAllPayment = ({
 
   const { data, isLoading, isSuccess, write, error } = useContractWrite({
     address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
-    abi: invoice.abi,
+    abi: abi,
     functionName: "sendAllPayment",
     args: [id, index],
     onSuccess() {

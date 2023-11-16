@@ -17,6 +17,7 @@ export default function Home() {
   });
 
   useEffect(() => {
+    // eslint-disable-next-line
     if (window.ethereum && window.ethereum.isMiniPay) {
       connect();
     }

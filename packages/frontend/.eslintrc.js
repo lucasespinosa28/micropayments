@@ -30,8 +30,9 @@ module.exports = {
 		"@typescript-eslint",
 		"react"
 	],
-	"ignorePatterns": ["*.ico", "*.png","*.css","*.mdx","*.svg"],
+	"ignorePatterns": ["*.json","*.ico", "*.png","*.css","*.mdx","*.svg"],
 	"rules": {
+		"@typescript-eslint/no-explicit-any": "off",
 		"react/react-in-jsx-scope": "off",
 		"react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
 		"linebreak-style": [
