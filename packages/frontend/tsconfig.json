@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/compoments/web3/sendPaymentAlltsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/compoments/web3/sendPaymentAlltsx", "src/stories/inputs/input.storiesjsx"],
   "exclude": ["node_modules"]
 }
