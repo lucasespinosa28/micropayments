@@ -1,14 +1,27 @@
 "use client";
 import Link from "next/link";
-import { useAccount } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 import { FindPayment } from "../compoments/inputs/findPayment";
 import { History } from "./History";
 import { Menu } from "../compoments/statics/menu";
 import { AlertWarning, AlertLoading } from "@/compoments/statics/alert";
 import { ButtonSecondary } from "@/compoments/inputs/buttons";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { InjectedConnector } from "wagmi/connectors/injected";
+import { useEffect } from "react";
 
 export default function Home() {
   const { address, isConnecting, isDisconnected, isConnected } = useAccount();
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  });
+
+  useEffect(() => {
+    if (window.ethereum && window.ethereum.isMiniPay) {
+      connect();
+    }
+  }, []);
+
   return (
     <main className="flex flex-col">
       <Menu />
@@ -24,6 +37,7 @@ export default function Home() {
           <AlertWarning>
             <>Disconnected</>
           </AlertWarning>
+          <ConnectButton />
         </div>
       )}
       {isConnected && address && (

@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Invoice is Ownable {
+contract Invoice  {
     mapping(address => bool) internal blocked;
     mapping(bytes32 => Payment[]) internal payments;
     mapping(address => bytes32[]) internal history;
@@ -18,8 +18,6 @@ contract Invoice is Ownable {
         address receiver;
         uint8 status;
     }
-
-    constructor(address initialOwner) Ownable(initialOwner) {}
 
     function getPaymentBalance(
         bytes32 id,

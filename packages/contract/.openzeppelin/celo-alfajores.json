@@ -1,0 +1,155 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x89588b20B577C7DCD414Ee084207C468A955F12d",
+    "txHash": "0x385e9033d5679afd854e7fa13dd821bb47d166d6a7ff0eca8d4c48357e5b5ff8"
+  },
+  "proxies": [
+    {
+      "address": "0x4EA7574eeC75B77049b0b169caE62ae384Eaa638",
+      "txHash": "0x53d6eaf46c714621120007a6e45be729000b152f866c2795e902b64cdfa7caa8",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
+      "txHash": "0xf919b47d30a8e4166bcc88f3ae400b42a7a65b5e28a01fbd9da098dbbd1fb7d6",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "53e0d51723d8f6bdd01c91c8fe490468926022dc8be2561f5fd1a2401e189c8f": {
+      "address": "0x9B9eA3bC0547b072A0002961cC7eac2f0E47bac2",
+      "txHash": "0xee77c23bb34480c4c4bad01a91dec240045ced67be391a8eaed9f58d1454549a",
+      "layout": {
+        "solcVersion": "0.8.20",
+        "storage": [
+          {
+            "label": "blocked",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "Invoice",
+            "src": "contracts\\Invoice.sol:8"
+          },
+          {
+            "label": "payments",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_mapping(t_bytes32,t_array(t_struct(Payment)287_storage)dyn_storage)",
+            "contract": "Invoice",
+            "src": "contracts\\Invoice.sol:9"
+          },
+          {
+            "label": "history",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)",
+            "contract": "Invoice",
+            "src": "contracts\\Invoice.sol:10"
+          },
+          {
+            "label": "paymentBalance",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_mapping(t_bytes32,t_mapping(t_uint256,t_uint256))",
+            "contract": "Invoice",
+            "src": "contracts\\Invoice.sol:11"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_bytes32)dyn_storage": {
+            "label": "bytes32[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_struct(Payment)287_storage)dyn_storage": {
+            "label": "struct Invoice.Payment[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_array(t_bytes32)dyn_storage)": {
+            "label": "mapping(address => bytes32[])",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_array(t_struct(Payment)287_storage)dyn_storage)": {
+            "label": "mapping(bytes32 => struct Invoice.Payment[])",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_mapping(t_uint256,t_uint256))": {
+            "label": "mapping(bytes32 => mapping(uint256 => uint256))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(Payment)287_storage": {
+            "label": "struct Invoice.Payment",
+            "members": [
+              {
+                "label": "dateTime",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "token",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "amount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "payer",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "receiver",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "status",
+                "type": "t_uint8",
+                "offset": 20,
+                "slot": "4"
+              }
+            ],
+            "numberOfBytes": "160"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {}
+      }
+    }
+  }
+}

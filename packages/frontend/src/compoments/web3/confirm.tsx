@@ -1,11 +1,10 @@
 import { useContractWrite } from "wagmi";
 import invoice from "../../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
-import contract from "../../../../contract/address.json";
+//import contract from "../../../../contract/address.json";
 import { WaitForTransaction } from "./WaitForTransaction";
 import { AlertError, AlertLoading } from "../statics/alert";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { ButtonSecondary } from "../inputs/buttons";
-import { reloading } from "@/app/Payments";
 
 export const Confirm = ({
   id,
@@ -17,18 +16,14 @@ export const Confirm = ({
   isReceiver: boolean;
 }) => {
   const [isDisplayed, setDisplayed] = useState<boolean>(false);
-  const { reload, setReload } = useContext(reloading);
   const label: string = isReceiver ? "Confirm" : "Send payment";
   const { data, isLoading, isSuccess, write, error } = useContractWrite({
-    address: contract.invoice as `0x${string}`,
+    address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
     abi: invoice.abi,
     functionName: "confirm",
     args: [id, BigInt(index)],
     onSuccess() {
       setDisplayed(true);
-      if(setReload){
-        setReload(!reload);
-      }
     },
   });
 

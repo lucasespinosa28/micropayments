@@ -1,5 +1,5 @@
 import invoice from "../../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
-import contract from "../../../../contract/address.json";
+//import contract from "../../../../contract/address.json";
 import { useContractRead } from "wagmi";
 import { AlertError, AlertLoading } from "../statics/alert";
 import { formatUnits } from "viem";
@@ -17,7 +17,7 @@ export const PaymentBalance = ({
   setBalance: Dispatch<SetStateAction<bigint>>;
 }) => {
   const { data, isLoading, isSuccess, isFetching, error } = useContractRead({
-    address: contract.invoice as `0x${string}`,
+    address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
     abi: invoice.abi,
     functionName: "getPaymentBalance",
     args: [id, BigInt(index)],

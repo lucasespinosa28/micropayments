@@ -58,11 +58,11 @@ interface Error {
 
 export const AlertError = ({ error }: { error: Error }) => {
   const [display, setDisplay] = useState<boolean>(true);
-  let message: string[] = ["Unknown error", "!"];
-  console.log(error);
-  if (error.message.includes(".") && error.message.includes(":")) {
-    message = error.message.split(".")[0].split(":");
-  }
+  // let message: string[] = ["Unknown error", "!"];
+  // console.log(error);
+  // if (error.message.includes(".") && error.message.includes(":")) {
+  //   message = error.message.split(".")[0].split(":");
+  // }
   return (
     <>
       {display ? (
@@ -70,9 +70,9 @@ export const AlertError = ({ error }: { error: Error }) => {
           <div className="flex flex-row items-stretch m-1">
             <div>
               <p className="text-sm">
-                {message[0].replace("confirm", "Receiver")}:
+                {error.message}
               </p>
-              <p className="font-bold">{message[1]}.</p>
+              {/* <p className="font-bold">{error.message}.</p> */}
             </div>
             <button className="self-center" onClick={() => setDisplay(false)}>
               <svg

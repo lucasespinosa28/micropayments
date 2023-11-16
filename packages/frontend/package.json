@@ -10,9 +10,10 @@
     "storybook": "storybook dev -p 6006",
     "fix": "eslint 'src/**' --fix",
     "build-storybook": "storybook build",
-    "prettier":"prettier src --write"
+    "prettier": "prettier src --write"
   },
   "dependencies": {
+    "@celo/rainbowkit-celo": "^1.1.0",
     "@faker-js/faker": "^8.2.0",
     "@formkit/auto-animate": "^0.8.0",
     "@rainbow-me/rainbowkit": "^1.1.3",

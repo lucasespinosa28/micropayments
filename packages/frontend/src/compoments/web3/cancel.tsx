@@ -1,25 +1,20 @@
 import { useContractWrite } from "wagmi";
 import invoice from "../../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
-import contract from "../../../../contract/address.json";
+//import contract from "../../../../contract/address.json";
 import { WaitForTransaction } from "./WaitForTransaction";
 import { AlertError, AlertLoading } from "../statics/alert";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { ButtonError } from "../inputs/buttons";
-import { reloading } from "@/app/Payments";
 
 export const Cancel = ({ id, index }: { id: `0x${string}`; index: number }) => {
   const [isDisabled, SetDisabled] = useState<boolean>(false);
-  const { reload, setReload } = useContext(reloading);
   const { data, isSuccess, write, error, isLoading } = useContractWrite({
-    address: contract.invoice as `0x${string}`,
+    address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
     abi: invoice.abi,
     functionName: "cancel",
     args: [id, BigInt(index)],
     onSuccess() {
       SetDisabled(true);
-      if (setReload) {
-        setReload(!reload);
-      }
     },
   });
   return (

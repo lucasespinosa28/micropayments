@@ -1,6 +1,6 @@
 import { useContractWrite } from "wagmi";
 import invoice from "../../../../contract/artifacts/contracts/Invoice.sol/Invoice.json";
-import contracts from "../../../../contract/address.json";
+// import contracts from "../../../../contract/address.json";
 import { WaitForTransaction } from "../../compoments/web3/WaitForTransaction";
 import { AlertError, AlertLoading } from "../../compoments/statics/alert";
 import { parseUnits, stringToHex } from "viem";
@@ -29,17 +29,26 @@ export const WriteCreate = ({
   const idRef = useRef(nanoid());
   const [isDisabled, setDisabled] = useState<boolean>(false);
   const dateTime: bigint[] = data.map((item) =>
-    BigInt(new Date(item.dateTime).getTime() / 1000),
+    BigInt(new Date(item.dateTime).getTime() / 1000)
   );
   const token: `0x${string}`[] = data.map(() => tokenAddress);
   const amount: bigint[] = data.map((item) => parseUnits(item.amount, 18));
   const payer: `0x${string}`[] = data.map(
-    (item) => item.payer as `0x${string}`,
+    (item) => item.payer as `0x${string}`
   );
   const receiver: `0x${string}`[] = data.map(
-    (item) => item.receiver as `0x${string}`,
+    (item) => item.receiver as `0x${string}`
   );
-
+  console.log({
+    args: [
+      stringToHex(idRef.current, { size: 32 }),
+      dateTime,
+      token,
+      amount,
+      payer,
+      receiver,
+    ],
+  });
   const {
     data: contract,
     isLoading,
@@ -47,7 +56,7 @@ export const WriteCreate = ({
     write,
     error,
   } = useContractWrite({
-    address: contracts.invoice as `0x${string}`,
+    address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
     abi: invoice.abi,
     functionName: "createPayment",
     args: [

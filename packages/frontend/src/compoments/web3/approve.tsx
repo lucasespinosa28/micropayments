@@ -1,11 +1,10 @@
 import { useContractWrite } from "wagmi";
 import { abi } from "../../../../contract/artifacts/contracts/Token.sol/Token.json";
-import contract from "../../../../contract/address.json";
+// import contract from "../../../../contract/address.json";
 import { WaitForTransaction } from "./WaitForTransaction";
-import { useContext, useState } from "react";
+import {  useState } from "react";
 import { AlertError, AlertLoading } from "../statics/alert";
 import { ButtonPrimary } from "../inputs/buttons";
-import { reloading } from "@/app/Payments";
 
 export const Approve = ({
   token,
@@ -20,17 +19,13 @@ export const Approve = ({
   index?: number;
 }) => {
   const [isDisplayed, setDisplayed] = useState<boolean>(false);
-  const { reload, setReload } = useContext(reloading);
   const { write, isSuccess, isLoading, data, error } = useContractWrite({
     address: token,
     abi: abi,
     functionName: "approve",
-    args: [contract.invoice as `0x${string}`, amount],
+    args: ["0x154b7a820f08729AEE849620aE058EF8d3CE967f", amount],
     onSuccess() {
       setDisplayed(true);
-      if (setReload) {
-        setReload(!reload);
-      }
     },
   });
   return (

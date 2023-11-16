@@ -53,11 +53,6 @@ export default function Home() {
               </button>
             </CopyToClipboard>
           </div>
-          <QRCodeSVG
-            className="mt-2 mb-2"
-            size={window.innerWidth - window.innerWidth * 0.1}
-            value={id}
-          />
           <Link id="payId" href={"/create/" + id}>
             <div className="flex justify-center ">
               <button className="bg-sky-500 text-white font-bold py-2 px-4 m-2 rounded shadow-md">
@@ -65,6 +60,11 @@ export default function Home() {
               </button>
             </div>
           </Link>
+          <QRCodeSVG
+            className="mt-2 mb-24"
+            size={window.innerWidth - window.innerWidth * 0.1}
+            value={id}
+          />
         </div>
       )}
     </main>

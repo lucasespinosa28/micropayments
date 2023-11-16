@@ -1,5 +1,4 @@
 import { useState } from "react";
-import contract from "../../../../contract/address.json";
 
 export const SelectToken = ({
   tokenRef,
@@ -7,13 +6,11 @@ export const SelectToken = ({
   tokenRef: React.MutableRefObject<`0x${string}`>;
 }) => {
   const tokens = [
-    contract.token,
-    "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1",
-    "0x10c892A6EC43a53E45D0B916B4b7D383B1b78C0F",
-    "0xE4D517785D091D3c54818832dB6094bcc2744545",
+    "0x471EcE3750Da237f93B8E339c536989b8978a438",
+    "0x765DE816845861e75A25fCA122bb6898B8B1282a",
   ];
   const [tokenAddress, setTokenAddress] = useState<`0x${string}`>(
-    contract.token as `0x${string}`,
+    "0x471EcE3750Da237f93B8E339c536989b8978a438",
   );
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -22,7 +19,7 @@ export const SelectToken = ({
     tokenRef.current = token;
   };
 
-  const options = ["Celo", "cUSD", "cEUR", "cREAL"].map((item, index) => (
+  const options = ["Celo", "cUSD"].map((item, index) => (
     <option key={`${item}-${index}`} value={index}>
       {item}
     </option>

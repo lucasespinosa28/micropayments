@@ -93,7 +93,6 @@ export const Table = ({
       <p className="font-bold">Receiver</p>
       <p>{shortAddress(payment.receiver, 8)}</p>
       <div className="flex flex-col m-4">
-        text{balance.toString()}
         {balance.toString() === "0" ? (
           <>
             <Approve

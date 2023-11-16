@@ -6,7 +6,7 @@ import { Payment } from "./Payment";
 
 export const useGetPayments = (id: `0x${string}`) => {
   const { data, isError, isLoading, error, isSuccess } = useContractRead({
-    address: contract.invoice as `0x${string}`,
+    address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
     abi: invoice.abi,
     functionName: "getPayments",
     args: [id],

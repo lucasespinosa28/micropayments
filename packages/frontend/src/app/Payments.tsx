@@ -4,7 +4,7 @@ import { AlertError, AlertLoading } from "@/compoments/statics/alert";
 import { hexToString } from "viem";
 import { Table } from "./table";
 import Link from "next/link";
-import { createContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Payment } from "@/hooks/Payment";
 import { Approve } from "@/compoments/web3/approve";
 import { SendAllPayment } from "@/compoments/web3/sendPaymentAll";
@@ -21,8 +21,7 @@ export function Payments({
   id: `0x${string}`;
   address: `0x${string}`;
 }) {
-  const [reload, setReload] = useState<boolean>(false);
-
+  console.log({id,address});
   const { payments, error, isLoading, isSuccess } = useGetPayments(id);
   const [all, setAll] = useState<boolean>();
   const total = useRef<bigint>(0n);
@@ -63,7 +62,7 @@ export function Payments({
       {error && <AlertError error={error} />}
       {isSuccess && (
         <>
-          {total && (
+          {total && payments.length > 0 &&(
             <div className="flex flex-col m-4">
               <Approve
                 label="Approve All"
@@ -72,7 +71,7 @@ export function Payments({
                 amount={total.current}
               />
               {islocked.current && all && (
-                <SendAllPayment setReload={setReload} reload={reload} id={id} index={islocked.current} />
+                <SendAllPayment id={id} index={islocked.current} />
               )}
             </div>
           )}

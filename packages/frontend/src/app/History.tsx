@@ -6,6 +6,7 @@ import { AlertLoading, AlertError } from "../compoments/statics/alert";
 export function History({ address }: { address: `0x${string}` }) {
   const { history, isError, error, isLoading, isSuccess } =
     useGetHistory(address);
+    console.log(history);
   return (
     <>
       {isLoading && (
