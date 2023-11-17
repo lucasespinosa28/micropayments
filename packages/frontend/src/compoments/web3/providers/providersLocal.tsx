@@ -33,6 +33,6 @@ const config = createConfig({
   ],
 });
 
-export default function Provider({ children }: { children: React.ReactNode }) {
+export function ProvidersLocal({ children }: { children: React.ReactNode }) {
   return <WagmiConfig config={config}>{children}</WagmiConfig>;
 }

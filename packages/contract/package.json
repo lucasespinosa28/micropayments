@@ -7,7 +7,7 @@
     "dev": "hardhat node",
     "deploy:testnet": "hardhat run ./scripts/testnet.ts --network alfajor",
     "deploy:mainnet": "hardhat run ./scripts/mainnet.ts --network celo",
-    "deploy:local": "hardhat run ./scripts/deploy.ts",
+    "deploy:local": "hardhat run ./scripts/local.ts  --network localhost",
     "token:mint": "hardhat run ./scripts/token.ts",
     "invoice": "hardhat run ./scripts/invoice.ts",
     "history": "hardhat run ./scripts/history.ts",

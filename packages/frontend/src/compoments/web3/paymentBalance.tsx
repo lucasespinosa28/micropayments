@@ -3,6 +3,7 @@ import { useContractRead } from "wagmi";
 import { AlertError, AlertLoading } from "../statics/alert";
 import { formatUnits } from "viem";
 import { Dispatch, SetStateAction, useEffect } from "react";
+import { paymentsContract } from "@/contract";
 
 export const PaymentBalance = ({
   id,
@@ -16,7 +17,7 @@ export const PaymentBalance = ({
   setBalance: Dispatch<SetStateAction<bigint>>;
 }) => {
   const { data, isLoading, isSuccess, isFetching, error } = useContractRead({
-    address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
+    address: paymentsContract,
     abi: abi,
     functionName: "getPaymentBalance",
     args: [id, BigInt(index)],

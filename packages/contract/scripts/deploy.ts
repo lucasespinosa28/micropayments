@@ -18,7 +18,12 @@ async function main() {
     chain: hardhat,
     transport: http()
   })
-
+  console.log({
+    abi: dataInvoice.abi,
+    account,
+    bytecode: dataInvoice.bytecode as `0x${string}`,
+    args: [accounts[0].Account as `0x${string}`]
+  })
   const invoice = await wallet.deployContract({
     abi: dataInvoice.abi,
     account,

@@ -4,6 +4,7 @@ import { abi } from "../../Invoice.json";
 import { WaitForTransaction } from "./WaitForTransaction";
 import { useState } from "react";
 import { ButtonPrimary } from "../inputs/buttons";
+import { paymentsContract } from "@/contract";
 
 export const SendAllPayment = ({
   id,
@@ -15,7 +16,7 @@ export const SendAllPayment = ({
   const [isDisplayed, setDisplayed] = useState<boolean>(false);
 
   const { data, isLoading, isSuccess, write, error } = useContractWrite({
-    address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
+    address: paymentsContract,
     abi: abi,
     functionName: "sendAllPayment",
     args: [id, index],

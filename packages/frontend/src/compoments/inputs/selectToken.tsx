@@ -1,25 +1,27 @@
 import { useState } from "react";
-
+//C:\Users\lucas\Documents\web3\celo\microinvoice\packages\frontend\src\compoments\web3\tokens.ts
+import {tokens} from "../../compoments/web3/tokens";
 export const SelectToken = ({
   tokenRef,
 }: {
   tokenRef: React.MutableRefObject<`0x${string}`>;
 }) => {
-  const tokens = [
-    "0x471EcE3750Da237f93B8E339c536989b8978a438",
-    "0x765DE816845861e75A25fCA122bb6898B8B1282a",
-  ];
+  // const tokens2 = tokens;
+  // const tokens = [
+  //   "0x471EcE3750Da237f93B8E339c536989b8978a438",
+  //   "0x765DE816845861e75A25fCA122bb6898B8B1282a",
+  // ];
   const [tokenAddress, setTokenAddress] = useState<`0x${string}`>(
-    "0x471EcE3750Da237f93B8E339c536989b8978a438",
+    tokens().address[0]
   );
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const token = tokens[parseInt(event.target.value)] as `0x${string}`;
+    const token = tokens().address[parseInt(event.target.value)] as `0x${string}`;
     setTokenAddress(token);
     tokenRef.current = token;
   };
 
-  const options = ["Celo", "cUSD"].map((item, index) => (
+  const options =tokens().symbol.map((item, index) => (
     <option key={`${item}-${index}`} value={index}>
       {item}
     </option>

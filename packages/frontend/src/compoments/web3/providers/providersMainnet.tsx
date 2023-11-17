@@ -13,12 +13,6 @@ const { chains, publicClient } = configureChains(
 
 const connectors = [new InjectedConnector({ chains })];
 
-// const { connectors } = getDefaultWallets({
-//   appName: "Micro payments",
-//   projectId: "YOUR_PROJECT_ID",
-//   chains
-// });
-
 const appInfo = {
   appName: "Celo Composer",
 };
@@ -29,7 +23,7 @@ const wagmiConfig = createConfig({
   publicClient: publicClient,
 });
 
-export default function ProviderMainnet({
+export function ProviderMainnet({
   children,
 }: {
   children: React.ReactNode;

@@ -7,6 +7,7 @@ import { nanoid } from "nanoid";
 import { InputValues } from "../../app/create/InputValues";
 import { useRef, useState } from "react";
 import { ButtonPrimary } from "@/compoments/inputs/buttons";
+import { paymentsContract } from "@/contract";
 
 export interface ContractArgs {
   receiver: string;
@@ -55,7 +56,7 @@ export const WriteCreate = ({
     write,
     error,
   } = useContractWrite({
-    address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
+    address: paymentsContract,
     abi: abi,
     functionName: "createPayment",
     args: [

@@ -9,7 +9,8 @@ import { ButtonSecondary } from "@/compoments/inputs/buttons";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { useEffect } from "react";
-
+import { contract } from "../../src/contract";
+import { isDevEnvironment } from "@/isDeveloper";
 export default function Home() {
   const { address, isConnecting, isDisconnected, isConnected } = useAccount();
   const { connect } = useConnect({
@@ -17,14 +18,14 @@ export default function Home() {
   });
 
   useEffect(() => {
-    // eslint-disable-next-line
-    if (window.ethereum && window.ethereum.isMiniPay) {
+    if (!isDevEnvironment && window.ethereum && window.ethereum.isMiniPay) {
       connect();
     }
   }, []);
 
   return (
     <main className="flex flex-col">
+      {<h1>{contract}</h1>}
       <Menu />
       {isConnecting && (
         <div>

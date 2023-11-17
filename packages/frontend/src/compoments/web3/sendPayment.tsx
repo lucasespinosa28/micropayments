@@ -5,6 +5,7 @@ import { abi } from "../../Invoice.json";
 import { WaitForTransaction } from "./WaitForTransaction";
 import { ButtonPrimary } from "../../compoments/inputs/buttons";
 import { useState } from "react";
+import { paymentsContract } from "@/contract";
 
 export const SendPayment = ({
   id,
@@ -16,7 +17,7 @@ export const SendPayment = ({
   const [isDisplayed, setDisplayed] = useState<boolean>(false);
   
   const { data, isLoading, isSuccess, write, error } = useContractWrite({
-    address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
+    address: paymentsContract,
     abi: abi,
     functionName: "sendPayment",
     args: [id, BigInt(index)],

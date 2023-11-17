@@ -4,6 +4,7 @@ import { WaitForTransaction } from "./WaitForTransaction";
 import { AlertError, AlertLoading } from "../statics/alert";
 import { useState } from "react";
 import { ButtonSecondary } from "../inputs/buttons";
+import { paymentsContract } from "@/contract";
 
 export const Confirm = ({
   id,
@@ -17,7 +18,7 @@ export const Confirm = ({
   const [isDisplayed, setDisplayed] = useState<boolean>(false);
   const label: string = isReceiver ? "Confirm" : "Send payment";
   const { data, isLoading, isSuccess, write, error } = useContractWrite({
-    address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
+    address: paymentsContract,
     abi: abi,
     functionName: "confirm",
     args: [id, BigInt(index)],

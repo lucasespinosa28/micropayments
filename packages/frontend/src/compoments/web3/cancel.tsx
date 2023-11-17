@@ -4,11 +4,12 @@ import { WaitForTransaction } from "./WaitForTransaction";
 import { AlertError, AlertLoading } from "../statics/alert";
 import { useState } from "react";
 import { ButtonError } from "../inputs/buttons";
+import { paymentsContract } from "@/contract";
 
 export const Cancel = ({ id, index }: { id: `0x${string}`; index: number }) => {
   const [isDisabled, SetDisabled] = useState<boolean>(false);
   const { data, isSuccess, write, error, isLoading } = useContractWrite({
-    address: "0x154b7a820f08729AEE849620aE058EF8d3CE967f",
+    address: paymentsContract,
     abi: abi,
     functionName: "cancel",
     args: [id, BigInt(index)],
