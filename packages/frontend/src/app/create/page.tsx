@@ -8,12 +8,13 @@ import { WriteCreate } from "../../compoments/web3/createPayment";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { QRCodeSVG } from "qrcode.react";
 import Link from "next/link";
+import {tokens} from "../../compoments/web3/tokens";
 import { Menu } from "../../compoments/statics/menu";
 
 export default function Home() {
   const { address } = useAccount();
   const [data, setData] = useState<InputValues[]>([]);
-  const tokenRef = useRef<`0x${string}`>("0x471EcE3750Da237f93B8E339c536989b8978a438");
+  const tokenRef = useRef<`0x${string}`>(tokens().address[0]);
   const [id, setId] = useState<string>("");
 
   return (
